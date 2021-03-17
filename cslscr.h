@@ -137,6 +137,22 @@ int CursorPositionY() {
 	return console_screen_buffer_info.dwCursorPosition.Y;
 }
 
+int WindowRows() {
+	CONSOLE_SCREEN_BUFFER_INFO console_screen_buffer_info;
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+	GetConsoleScreenBufferInfo(console, &console_screen_buffer_info);
+	
+  return console_screen_buffer_info.srWindow.Bottom - console_screen_buffer_info.srWindow.Top + 1;
+}
+
+int WindowColumns() {
+	CONSOLE_SCREEN_BUFFER_INFO console_screen_buffer_info;
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+	GetConsoleScreenBufferInfo(console, &console_screen_buffer_info);
+	
+  return console_screen_buffer_info.srWindow.Right - console_screen_buffer_info.srWindow.Left + 1;
+}
+
 // Set foreground
 void SetForeground(int f_color) {
 	CURRENT_FOREGROUND = f_color;
@@ -527,13 +543,4 @@ void PrintRecShapeWP(char chr, int width, int height, int x, int y) {
 	GotoXY(x, y);
 	
 	PrintRecShape(chr, width, height);
-}
-
-int main() {
-	ClearScreen(BACKGROUND_BLACK);
-	SetBackground(BACKGROUND_BLUE);
-	GotoXY(4, 4);
-	PrintVerLine(' ', 20);
-	SetBackground(BACKGROUND_BLACK);
-	return 0;
 }
