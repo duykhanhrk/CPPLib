@@ -1,0 +1,71 @@
+VatTu - Cay nhi phan
+  ma_tu: char[10]
+  ten_vt: char *
+  dvt: char *
+
+NhanVien - Mang tro tuyen tinh (max 500)
+  ma_nv: char[10]
+  ho: char *
+  ten: char *
+  phai: char *
+  dshd: HoaDon *
+
+HoaDon - danh sach lien ket don
+  so_hd: char[20]
+  ngay_tao: char *
+  loai: char (N | X)
+  dscthd: CTHoaDon
+
+CTHoaDon - danh sach tuyen tinh (max 20)
+  ma_vt: char[20]
+  so_luong: int
+  don_gia: long
+  vat: double
+
+Features:
+  VatTu: them, xoa, sua, hien thi
+  NhanVien: them, xoa, sua, hien thi
+  HoaDon - CTHoaDon: them, xoa, sua, hien thi
+  Thong ke: Hoa Don theo khoang thoi gian, Doanh thu cao trong khoan thoi gian
+
+Interface
+  VatTu -> Them, xoa, sua, hien thi
+  NhanVien -> Them, xoa, sua, hien thi
+  HoaDon -> Them, xoa, sua, hien thi
+  Thong Ke -> Hoa don ft, Doanh thu ft
+
+Page
+  VatTu -> (1)
+  NhanVien -> (1)
+  CTHoaDon -> (2 - VatTu)
+  HoaDon -> (2 - NhanVien)
+  TKHoaDonFT -> (1)
+  DoanhThuFT -> (1)
+
+Storage
+  VatTu.dat
+  NhanVien.dat (NhanVien, HoaDon, CTHoaDon)
+
+Control
+  Input
+    Number
+    Real
+    DateTime
+    String
+    Pure String
+  Echo
+    Number
+    Real
+    DateTime
+    String
+    Line
+    Box
+  List
+    ListView
+    ListOptions
+  Form
+    Two Options
+    Input
+  Error
+    Error Message Box
+

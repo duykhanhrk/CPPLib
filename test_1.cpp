@@ -54,11 +54,11 @@
 // Print control panel
 #define PRINT_CONTROL_PANEL PrintWP("[SPACE] Pause  |  [LEFT] Jump down  |  [RIGHT] Jump up", MIDLE_X(54), WindowRows() - 2); \
                             PrintWP("[ENTER] New session  |  [ESC] Exit", MIDLE_X(34), WindowRows() - 1);
-                            
+
 // Print step
 #define PRINT_MOVE_STEP(pillar_a, pillar_b) GotoXY(MIDLE_X(6), WindowRows() - 4); \
                         printf("%c -> %c", pillar_a->name, pillar_b->name);
-                            
+
 // Pause?
 #define PAUSE_YN if (PAUSE) SessionControlPanel()
 
@@ -76,7 +76,7 @@
                        if (COMMAND == 3) { \
                          PAUSE_HANDLE; \
 											 }
-											 
+
 #define MOVING_TRIGGER COMMAND_HANDLE; \
                        if (kbhit()) SessionControlPanel(); \
                        COMMAND_HANDLE;
@@ -140,7 +140,7 @@ void PrintPillar(Pillar *pillar) {
 		pillar->position_x + pillar->size + 1,
 		pillar->position_y
 	);
-	
+
 	PrintHorLine(
     DEFAULT_CHAR,
     DISC_SHAPE_SIZE_FORMULA(pillar->size + 1),
@@ -175,7 +175,7 @@ void PrintDisc(Disc *disc, int position_x) {
 
 void SessionControlPanel() {
 	int c = getch();
-	
+
 	if (c == ENTER) {
 		// New session
 		COMMAND = 2;
@@ -188,7 +188,7 @@ void SessionControlPanel() {
 	} else if (c == 224) {
 		// Move speed
 		c = getch();
-		
+
 		if (c == KEY_LEFT) {
 			MOVE_DISC_VER_SPEED_DOWN;
 			MOVE_DISC_HOR_SPEED_DOWN;
@@ -196,7 +196,7 @@ void SessionControlPanel() {
 			MOVE_DISC_VER_SPEED_UP;
 			MOVE_DISC_HOR_SPEED_UP;
 		}
-		
+
 		PAUSE_YN;
 	} else {
 		PAUSE_YN;
@@ -207,30 +207,30 @@ void MoveDiscOut(Pillar *pillar) {
 	Disc *disc = PILLAR_HEAD_DISC(pillar);
 	Disc _disc = *disc;
 	_disc.color = DEFAULT_BACKGROUND;
-	
+
 	Disc __disc = *disc;
 	__disc.size = 0;
 	__disc.color = PILLAR_COLOR;
-	
+
 	while (disc->index > -(PILLAR_DISC_SPACING_LIMIT + 1)) {
 		MOVING_TRIGGER;
-		
+
 		disc->index --;
-		
+
 		PrintDisc(&_disc);
 		if (__disc.index >= 0) {
 			PrintDisc(&__disc);
 		}
 		PrintDisc(disc);
-		
+
 		_disc.index --;
 		__disc.index --;
-		
+
 		Sleep(MOVE_DISC_VER_SPEED);
 
 		MOVING_TRIGGER;
 	}
-	
+
 	// Drop head disc
 	pillar->discs ++;
 	pillar->disc_count --;
@@ -239,30 +239,30 @@ void MoveDiscOut(Pillar *pillar) {
 void MoveDiscIn(Disc *disc, Pillar *pillar) {
 	Disc _disc = *disc;
 	_disc.color = DEFAULT_BACKGROUND;
-	
+
 	Disc __disc = *disc;
 	__disc.size = 0;
 	__disc.color = PILLAR_COLOR;
-	
+
 	while (disc->index < PILLAR_HEAD_INDEX(pillar)) {
 		MOVING_TRIGGER;
-		
+
 		disc->index ++;
-		
+
 		PrintDisc(&_disc);
 		if (__disc.index >= 0) {
 			PrintDisc(&__disc);
 		}
 		PrintDisc(disc);
-			
+
 		_disc.index ++;
 		__disc.index ++;
-		
+
 		Sleep(MOVE_DISC_VER_SPEED);
-		
+
 		MOVING_TRIGGER;
 	}
-	
+
 	// Add disc to head index
 	pillar->discs --;
 	*(pillar->discs) = disc;
@@ -272,18 +272,18 @@ void MoveDiscIn(Disc *disc, Pillar *pillar) {
 void MoveDiscToRight(Disc *disc, int from_position_x, int to_position_x) {
 	Disc _disc = *disc;
 	_disc.color = DEFAULT_BACKGROUND;
-	
+
 	while (from_position_x < to_position_x) {
 		MOVING_TRIGGER;
-		
+
 		from_position_x += DISC_HOR_JUMP;
 		from_position_x = from_position_x > to_position_x ? to_position_x : from_position_x;
-		
+
 		PrintDisc(&_disc, from_position_x - DISC_HOR_JUMP);
 		PrintDisc(disc, from_position_x);
-		
+
 		Sleep(MOVE_DISC_HOR_SPEED);
-		
+
 		MOVING_TRIGGER;
 	}
 }
@@ -294,46 +294,46 @@ void MoveDiscToLeft(Disc *disc, int from_position_x, int to_position_x) {
 
 	while(from_position_x > to_position_x) {
 		MOVING_TRIGGER;
-		
+
 		from_position_x -= DISC_HOR_JUMP;
 		from_position_x = from_position_x < to_position_x ? to_position_x : from_position_x;
 		PrintDisc(&_disc, from_position_x + DISC_HOR_JUMP);
 		PrintDisc(disc, from_position_x);
-		
+
 		Sleep(MOVE_DISC_HOR_SPEED);
-		
+
 		MOVING_TRIGGER;
 	}
 }
 
 void MoveDisc(Pillar *from_pillar, Pillar *to_pillar) {
 	Disc *disc = PILLAR_HEAD_DISC(from_pillar);
-	
+
 	COMMAND_HANDLE;
-	
+
 	// Print move step
 	PRINT_MOVE_STEP(from_pillar, to_pillar);
-	
+
 	// Moves disc out of current pillar
 	MoveDiscOut(from_pillar);
-	
+
 	COMMAND_HANDLE;
-	
+
 	// Move the disc horizontally
 	int from_position_x = DISC_SHAPE_POSITION_X_FORMULA(disc);
 	disc->pillar = to_pillar;
 	int to_position_x = DISC_SHAPE_POSITION_X_FORMULA(disc);
-	
+
 	COMMAND_HANDLE;
-	
+
 	if (from_position_x < to_position_x) {
 		MoveDiscToRight(disc, from_position_x, to_position_x);
 	} else {
 		MoveDiscToLeft(disc, from_position_x, to_position_x);
 	}
-	
+
 	COMMAND_HANDLE;
-	
+
 	// Moves disc out of current pillar
 	MoveDiscIn(disc, to_pillar);
 }
@@ -345,7 +345,7 @@ void HaNoi(int n, Pillar *pillar_a, Pillar *pillar_b, Pillar *pillar_c) {
     COMMAND_HANDLE;
 		return;
 	}
-	
+
 	HaNoi(n - 1, pillar_a, pillar_c, pillar_b);
 	COMMAND_HANDLE;
 	HaNoi(1, pillar_a, pillar_b, pillar_c);
@@ -357,37 +357,37 @@ void Session() {
 	// Reset values
 	COMMAND = 3;
 	PAUSE = 0;
-	
+
 	// Set background, foreground and clear screen
-	SetColor(DEFAULT_FOREGROUND, DEFAULT_BACKGROUND);
+SetColor(DEFAULT_FOREGROUND, DEFAULT_BACKGROUND);
 	ClearScreen();
-	
-	do {
+
+  do {
 		// Get Input
 		PrintWP("Nhap so N: ", MIDLE_X(12), MIDLE_Y(1));
 		Input(N);
-		
+
 		// Clear screen
 		ClearScreen();
 	} while (N < 1 || N > 24);
-	
-	
+
+
 	// Initialize
 	// Discs
 	Disc **discs_a = new Disc*[N + 1];
 	Disc **discs_b = new Disc*[N + 1];
 	Disc **discs_c = new Disc*[N + 1];
-	
+
 	// Pillar
 	Pillar pillar_a = { 'A', N, PILLAR_COLOR, PILLAR_A_POSITION_X, PILLAR_A_POSITION_Y, discs_a, N };
 	Pillar pillar_b = { 'B', N, PILLAR_COLOR, PILLAR_B_POSITION_X, PILLAR_B_POSITION_Y, discs_b + N + 1, 0 };
 	Pillar pillar_c = { 'C', N, PILLAR_COLOR, PILLAR_C_POSITION_X, PILLAR_C_POSITION_Y, discs_c + N + 1, 0 };
-	
+
 	// Print three pillars
 	PrintPillar(&pillar_a);
 	PrintPillar(&pillar_b);
 	PrintPillar(&pillar_c);
-	
+
 	// Discs
 	Disc *discs = new Disc[N];
 	for (int i = 0; i < N; i ++) {
@@ -395,28 +395,28 @@ void Session() {
 		(discs + i)->size = i + 1;
 		(discs + i)->color = 16 * (i % 9 + 1);
 		(discs + i)->pillar = &pillar_a;
-		
+
 		*(pillar_a.discs + i) = (discs + i);
 		PrintDisc(discs + i);
 	}
-	
+
 	PRINT_CONTROL_PANEL;
-	
+
 	// Open result file
 	result_file = fopen(RESULT_FILE_NAME, "w+");
-	
+
 	// Act
 	HaNoi(N, &pillar_a, &pillar_b, &pillar_c);
-	
+
 	// Close result file
 	fclose(result_file);
-	
+
 	// Clear
 	delete [] discs;
 	delete [] discs_a;
 	delete [] discs_b;
 	delete [] discs_c;
-	
+
 	GotoXY(WindowColumns() - 1,  WindowRows() - 1);
 }
 
@@ -424,14 +424,14 @@ int MainControlPanel() {
 	if (COMMAND == 1) {
 		return 1;
 	}
-	
+
 	if (COMMAND == 2) {
 		Session();
 		return 0;
 	}
-	
+
 	int c = getch();
-	
+
 	if (c == ENTER) {
 		// New session
 		COMMAND = 2;
@@ -441,7 +441,7 @@ int MainControlPanel() {
 	} else if (c == 224) {
 		// Move speed
 		c = getch();
-		
+
 		if (c == KEY_LEFT) {
 			MOVE_DISC_VER_SPEED_DOWN;
 			MOVE_DISC_HOR_SPEED_DOWN;
@@ -450,7 +450,7 @@ int MainControlPanel() {
 			MOVE_DISC_HOR_SPEED_UP;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -460,9 +460,9 @@ int MainControlPanel() {
 
 int main() {
 	while (MainControlPanel() != 1);
-	
+
 	ClearScreen();
-	
+
 	return 0;
 }
 
