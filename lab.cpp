@@ -2,65 +2,157 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include <time.h>
+#include "cslscr.h"
 #include <iostream>
 
-#define show(obj) std::cout << obj << std::endl;
+#define IsLeapYear(year) (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))
 
-// Keys
-#define ENTER 0xD
-#define ESC 27
-#define BACKSPACE 8
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
+NumberInputEvent(TwoCharStyle, unsigned int) {
+  GotoXY(position_x, position_y);
+  if (obj < 10) printf("0%hu", obj);
+  else printf("%hu", obj);
+}
 
-char Input(long long int &obj, long long int max = 9223372036854775807, long long int min = -9223372036854775807) {
+char DateInput(
+  time_t &obj,
+  time_t max = time(NULL),
+  time_t min = time(NULL),
+  position_tp position_x = CURRENT_CURSOR_POSITION_X,
+  position_tp position_y = CURRENT_CURSOR_POSITION_Y,
+  color_tp f_color = CURRENT_FOREGROUND,
+  color_tp b_color = CURRENT_BACKGROUND,
+  color_tp on_active_f_color = INPUT_ON_ACTIVE_FOREGROUND,
+  color_tp on_active_b_color = INPUT_ON_ACTIVE_BACKGROUND,
+  size_tp container_size = UINT_CONTAINER_SIZE,
+  bool (*NavigationPanel)(char) = STANDARD_NAV_PANEL,
+  NumberInputEventPrototype(OnChange, unsigned int) = NULL,
+  NumberInputEventPrototype(OnSwallow, unsigned int) = NULL,
+  NumberInputEventPrototype(OnWrong, unsigned int) = NULL,
+  NumberInputEventPrototype(OnStart, unsigned int) = NULL,
+  NumberInputEventPrototype(OnEnd, unsigned int) = NULL
+) {
+  // Start
+  int current_foreground = CURRENT_FOREGROUND;
+  int current_background = CURRENT_BACKGROUND;
+  GotoXY(position_x, position_y);
+
+
+  unsigned int year, month ,day;
+
+  time(&obj);
+  struct tm *timeinfo = localtime(&obj);
+  year = timeinfo->tm_year + 1900;
+  month = timeinfo->tm_mon + 1;
+  day = timeinfo->tm_mday;
+//  mktime(timeinfo);
+
   char c = '\0';
 
-  min = 0;
+  printf("%hu/0%hu/%hu", day, month, year);
 
-  printf("%d", obj);
-  if (obj == 0) printf("%c", BACKSPACE);
+  int days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-  int sign = obj < 0 ? -1 : 1;
+  char current_edit = 'd';
+  while (!NavigationPanel(c)) {
+    if (current_edit == 'd') {
+      days[1] = IsLeapYear(year) ? 29 : 28;
+      c = UIntInput(
+        day,
+        days[month - 1],
+        1,
+        position_x,
+        position_y,
+        f_color,
+        b_color,
+        on_active_f_color,
+        on_active_b_color,
+        2,
+        FULL_ARROW_NAV_PANEL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        TwoCharStyle
+      );
+      if (c == KEY_RIGHT) current_edit = 'm';
+      else if (c == KEY_LEFT) current_edit = 'y';
+    } else if (current_edit == 'm') {
+      days[1] = IsLeapYear(year) ? 29 : 28;
+      c = UIntInput(
+        month,
+        12,
+        1,
+        position_x + 3,
+        position_y,
+        f_color,
+        b_color,
+        on_active_f_color,
+        on_active_b_color,
+        2,
+        FULL_ARROW_NAV_PANEL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        TwoCharStyle
+      );
 
-  while (c != ENTER && c != ESC && c != KEY_UP && c != KEY_DOWN) {
-    if (obj == 0) printf("0%c", BACKSPACE);
-
-    c = getch();
-
-    if (c >= 48 && c <= 57) {
-      if ((sign == 1 && max - obj < max - max/10) || (sign == -1 && min - obj > min - min/10)) continue;
-      else if ((sign == 1 && max - obj == max - max/10 && c - 48 > max%10) || (sign == -1 && min - obj == min - min/10 && 48 - c < min%10)) continue;
-
-      obj = obj * 10 + (c - 48) * sign;
-      if (obj == 0) continue;
-      printf("%c", c);
-    } else if (c == BACKSPACE) {
-      if (obj != 0) printf("%c %c", BACKSPACE, BACKSPACE);
-      else if (obj == 0 && sign == -1) {
-        printf("%c%c  %c%c", BACKSPACE, BACKSPACE, BACKSPACE, BACKSPACE);
-        sign = 1;
+      if (day > days[month - 1]) {
+        day = days[month - 1];
+        GotoXY(position_x, position_y);
+        printf("%u", day);
+        GotoXY(position_x + 5, position_y);
       }
-      obj /= 10;
-    } else if (c == 45 && obj == 0 && sign == 1) {
-      sign = -1;
-      printf("%c", '-');
+
+      if (c == KEY_RIGHT) current_edit = 'y';
+      else if (c == KEY_LEFT) current_edit = 'd';
+    } else if (current_edit == 'y') {
+      c = UIntInput(
+        year,
+        9999,
+        1900,
+        position_x + 6,
+        position_y,
+        f_color,
+        b_color,
+        on_active_f_color,
+        on_active_b_color,
+        2,
+        FULL_ARROW_NAV_PANEL
+      );
+
+      if (month == 2 && day == 29 && !IsLeapYear(year)) {
+        day = 28u;
+        GotoXY(position_x, position_y);
+        printf("%u", 28);
+        GotoXY(position_x + 10, position_y);
+      }
+
+      if (c == KEY_RIGHT) current_edit = 'd';
+      else if (c == KEY_LEFT) current_edit = 'm';
     }
   }
 
+  SetColor(current_foreground, current_background);
   return c;
 }
 
 int main() {
-  long long int n = 0;
-
-  Input(n);
-  show("");
-  show(n);
+  time_t t = time(NULL);
+  DateInput(
+    t,
+    time(NULL),
+    time(NULL),
+    CURRENT_CURSOR_POSITION_X,
+    CURRENT_CURSOR_POSITION_Y,
+    CURRENT_FOREGROUND,
+    CURRENT_BACKGROUND,
+    FOREGROUND_BLUE,
+    BACKGROUND_WHITE
+  );
 
   system("PAUSE");
   return 0;
 }
-
