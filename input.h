@@ -204,7 +204,7 @@ char UShortInput(
   NumberInputEventHandle(OnStart);
 
   // Re-create the context
-  printf("%u", obj);
+  printf("%hu", obj);
   if (obj == 0) printf("%c", BACKSPACE);
 
   // Input
@@ -253,7 +253,7 @@ char UShortInput(
   // DrawHorLine
   DrawHorLine(container_size, ' ', position_x, position_y, f_color, b_color);
   GotoXY(position_x, position_y);
-  printf("%u", obj);
+  printf("%hu", obj);
 
   // Call OnEnd
   NumberInputEventHandle(OnEnd);
@@ -496,6 +496,136 @@ char ULongInput(
   DrawHorLine(container_size, ' ', position_x, position_y, f_color, b_color);
   GotoXY(position_x, position_y);
   printf("%llu", obj);
+
+  // Call OnEnd
+  NumberInputEventHandle(OnEnd);
+
+  ApplyColorContext;
+  return c;
+}
+
+/* Int */
+
+// Limit
+#define SHORT_MAX_VALUE 32767
+#define SHORT_MIN_VALUE -32768
+
+// Define
+#define SHORT_INPUT_MAX_VALUE SHORT_MAX_VALUE
+#define SHORT_INPUT_MIN_VALUE SHORT_MIN_VALUE
+#define SHORT_INPUT_POSITION_X NUMBER_INPUT_POSITION_X
+#define SHORT_INPUT_POSITION_Y NUMBER_INPUT_POSITION_Y
+#define SHORT_INPUT_FOREGROUND NUMBER_INPUT_FOREGROUND
+#define SHORT_INPUT_BACKGROUND NUMBER_INPUT_BACKGROUND
+#define SHORT_INPUT_ON_ACTIVE_FOREGROUND NUMBER_INPUT_ON_ACTIVE_FOREGROUND
+#define SHORT_INPUT_ON_ACTIVE_BACKGROUND NUMBER_INPUT_ON_ACTIVE_BACKGROUND
+#define SHORT_INPUT_CONTAINER_SIZE 11
+#define SHORT_INPUT_NAV_PANEL NUMBER_INPUT_NAV_PANEL
+#define SHORT_INPUT_ON_CHANGE_EVENT NUMBER_INPUT_ON_CHANGE_EVENT
+#define SHORT_INPUT_ON_SWALLOW_EVENT NUMBER_INPUT_ON_SWALLOW_EVENT
+#define SHORT_INPUT_ON_WRONG_EVENT NUMBER_INPUT_ON_WRONG_EVENT
+#define SHORT_INPUT_ON_START_EVENT NUMBER_INPUT_ON_START_EVENT
+#define SHORT_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
+
+char ShortInput(
+  short int &obj,
+  short int max = SHORT_INPUT_MAX_VALUE,
+  short int min = SHORT_INPUT_MIN_VALUE,
+  position_tp position_x = SHORT_INPUT_POSITION_X,
+  position_tp position_y = SHORT_INPUT_POSITION_Y,
+  color_tp f_color = SHORT_INPUT_FOREGROUND,
+  color_tp b_color = SHORT_INPUT_BACKGROUND,
+  color_tp on_active_f_color = SHORT_INPUT_ON_ACTIVE_FOREGROUND,
+  color_tp on_active_b_color = SHORT_INPUT_ON_ACTIVE_BACKGROUND,
+  size_tp container_size = SHORT_INPUT_CONTAINER_SIZE,
+  bool (*NavigationPanel)(char) = SHORT_INPUT_NAV_PANEL,
+  NumberInputEventPrototype(OnChange, short int) = SHORT_INPUT_ON_CHANGE_EVENT,
+  NumberInputEventPrototype(OnSwallow, short int) = SHORT_INPUT_ON_SWALLOW_EVENT,
+  NumberInputEventPrototype(OnWrong, short int) = SHORT_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnStart, short int) = SHORT_INPUT_ON_START_EVENT,
+  NumberInputEventPrototype(OnEnd, short int) = SHORT_INPUT_ON_END_EVENT
+) {
+  // Initialize
+  SaveColorContext;
+
+  // Setup color
+  SetColor(on_active_f_color, on_active_b_color);
+
+  // Draw container
+  DrawHorLine(container_size, ' ', position_x, position_y, on_active_f_color, on_active_b_color);
+
+  // Setup cursor position
+  GotoXY(position_x, position_y);
+
+  // Init stash
+  InitStash;
+
+  // Define c
+  char c = '\0';
+
+  // Call OnStart
+  NumberInputEventHandle(OnStart);
+
+  // Re-create the context
+  printf("%hi", obj);
+  if (obj == 0) printf("%c", BACKSPACE);
+
+  // Sign
+  int sign = obj < 0 ? -1 : 1;
+
+  // Input
+  while (true) {
+    // Navigate
+    if (NavigationPanel(c)) break;
+
+    c = getch();
+
+    // Navigate
+    if (NavigationPanel(c)) break;
+
+    if (IsNumericChar(c)) {
+      if ((sign == 1 && CanExceedMaxValue(obj, c, max)) || (sign == -1 && CanExceedMinValue(obj, c, min))) {
+        NumberInputEventHandle(OnSwallow);
+        continue;
+      }
+
+      obj = obj * 10 + CharToNumber(c) * sign;
+      if (obj == 0) continue;
+      printf("%c", c);
+
+      // Call OnChange
+      NumberInputEventHandle(OnChange);
+    } else if (c == BACKSPACE) {
+      if (obj != 0) printf("%c %c", BACKSPACE, BACKSPACE);
+      else if (obj == 0 && sign == -1) {
+        printf("%c%c  %c%c", BACKSPACE, BACKSPACE, BACKSPACE, BACKSPACE);
+        sign = 1;
+      }
+      obj /= 10;
+
+      // Call OnChange
+      NumberInputEventHandle(OnChange);
+    } else if (c == 45 && obj == 0 && sign == 1) {
+      sign = -1;
+      printf("%c", '-');
+    } else {
+      // Call OnWrong
+      NumberInputEventHandle(OnWrong);
+    }
+
+    if (obj == 0) printf("0%c", BACKSPACE);
+  }
+
+  // Check min and re-create the context
+  obj = obj < min ? min : obj;
+
+  // Setup color
+  SetColor(f_color, b_color);
+
+  // DrawHorLine
+  DrawHorLine(container_size, ' ', position_x, position_y, f_color, b_color);
+  GotoXY(position_x, position_y);
+  printf("%hi", obj);
 
   // Call OnEnd
   NumberInputEventHandle(OnEnd);
