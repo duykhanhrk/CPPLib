@@ -507,8 +507,8 @@ char ULongInput(
 /* Int */
 
 // Limit
-#define SHORT_MAX_VALUE 2147483647
-#define SHORT_MIN_VALUE -2147483648
+#define SHORT_MAX_VALUE 32767
+#define SHORT_MIN_VALUE -32768
 
 // Define
 #define SHORT_INPUT_MAX_VALUE SHORT_MAX_VALUE
@@ -528,9 +528,9 @@ char ULongInput(
 #define SHORT_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
 
 char ShortInput(
-  int &obj,
-  int max = SHORT_INPUT_MAX_VALUE,
-  int min = SHORT_INPUT_MIN_VALUE,
+  short int &obj,
+  short int max = SHORT_INPUT_MAX_VALUE,
+  short int min = SHORT_INPUT_MIN_VALUE,
   position_tp position_x = SHORT_INPUT_POSITION_X,
   position_tp position_y = SHORT_INPUT_POSITION_Y,
   color_tp f_color = SHORT_INPUT_FOREGROUND,
@@ -539,11 +539,11 @@ char ShortInput(
   color_tp on_active_b_color = SHORT_INPUT_ON_ACTIVE_BACKGROUND,
   size_tp container_size = SHORT_INPUT_CONTAINER_SIZE,
   bool (*NavigationPanel)(char) = SHORT_INPUT_NAV_PANEL,
-  NumberInputEventPrototype(OnChange, int) = SHORT_INPUT_ON_CHANGE_EVENT,
-  NumberInputEventPrototype(OnSwallow, int) = SHORT_INPUT_ON_SWALLOW_EVENT,
-  NumberInputEventPrototype(OnWrong, int) = SHORT_INPUT_ON_WRONG_EVENT,
-  NumberInputEventPrototype(OnStart, int) = SHORT_INPUT_ON_START_EVENT,
-  NumberInputEventPrototype(OnEnd, int) = SHORT_INPUT_ON_END_EVENT
+  NumberInputEventPrototype(OnChange, short int) = SHORT_INPUT_ON_CHANGE_EVENT,
+  NumberInputEventPrototype(OnSwallow, short int) = SHORT_INPUT_ON_SWALLOW_EVENT,
+  NumberInputEventPrototype(OnWrong, short int) = SHORT_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnStart, short int) = SHORT_INPUT_ON_START_EVENT,
+  NumberInputEventPrototype(OnEnd, short int) = SHORT_INPUT_ON_END_EVENT
 ) {
   // Initialize
   SaveColorContext;
