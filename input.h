@@ -141,6 +141,127 @@ char AlphabetNumberUnderscoreValidChar(char c) {
 #define NUMBER_INPUT_ON_START_EVENT NULL
 #define NUMBER_INPUT_ON_END_EVENT NULL
 
+/* UShort */
+
+// Limit
+#define USHORT_MAX_VALUE 65535u
+#define USHORT_MIN_VALUE 0
+
+// Define
+#define USHORT_INPUT_MAX_VALUE USHORT_MAX_VALUE
+#define USHORT_INPUT_MIN_VALUE USHORT_MIN_VALUE
+#define USHORT_INPUT_POSITION_X NUMBER_INPUT_POSITION_X
+#define USHORT_INPUT_POSITION_Y NUMBER_INPUT_POSITION_Y
+#define USHORT_INPUT_FOREGROUND NUMBER_INPUT_FOREGROUND
+#define USHORT_INPUT_BACKGROUND NUMBER_INPUT_BACKGROUND
+#define USHORT_INPUT_ON_ACTIVE_FOREGROUND NUMBER_INPUT_ON_ACTIVE_FOREGROUND
+#define USHORT_INPUT_ON_ACTIVE_BACKGROUND NUMBER_INPUT_ON_ACTIVE_BACKGROUND
+#define USHORT_INPUT_CONTAINER_SIZE 5
+#define USHORT_INPUT_NAV_PANEL NUMBER_INPUT_NAV_PANEL
+#define USHORT_INPUT_ON_CHANGE_EVENT NUMBER_INPUT_ON_CHANGE_EVENT
+#define USHORT_INPUT_ON_SWALLOW_EVENT NUMBER_INPUT_ON_SWALLOW_EVENT
+#define USHORT_INPUT_ON_WRONG_EVENT NUMBER_INPUT_ON_WRONG_EVENT
+#define USHORT_INPUT_ON_START_EVENT NUMBER_INPUT_ON_START_EVENT
+#define USHORT_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
+
+char UShortInput(
+  unsigned short int &obj,
+  unsigned short int max = USHORT_INPUT_MAX_VALUE,
+  unsigned short int min = USHORT_INPUT_MIN_VALUE,
+  position_tp position_x = USHORT_INPUT_POSITION_X,
+  position_tp position_y = USHORT_INPUT_POSITION_Y,
+  color_tp f_color = USHORT_INPUT_FOREGROUND,
+  color_tp b_color = USHORT_INPUT_BACKGROUND,
+  color_tp on_active_f_color = USHORT_INPUT_ON_ACTIVE_FOREGROUND,
+  color_tp on_active_b_color = USHORT_INPUT_ON_ACTIVE_BACKGROUND,
+  size_tp container_size = USHORT_INPUT_CONTAINER_SIZE,
+  bool (*NavigationPanel)(char) = USHORT_INPUT_NAV_PANEL,
+  NumberInputEventPrototype(OnChange, unsigned short int) = USHORT_INPUT_ON_CHANGE_EVENT,
+  NumberInputEventPrototype(OnSwallow, unsigned short int) = USHORT_INPUT_ON_SWALLOW_EVENT,
+  NumberInputEventPrototype(OnWrong, unsigned short int) = USHORT_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnStart, unsigned short int) = USHORT_INPUT_ON_START_EVENT,
+  NumberInputEventPrototype(OnEnd, unsigned short int) = USHORT_INPUT_ON_END_EVENT
+) {
+  // Initialize
+  SaveColorContext;
+
+  // Setup color
+  SetColor(on_active_f_color, on_active_b_color);
+
+  // Draw container
+  DrawHorLine(container_size, ' ', position_x, position_y, on_active_f_color, on_active_b_color);
+
+  // Setup cursor position
+  GotoXY(position_x, position_y);
+
+  // Init stash
+  InitStash;
+
+  // Define c
+  char c = '\0';
+
+  // Call OnStart
+  NumberInputEventHandle(OnStart);
+
+  // Re-create the context
+  printf("%u", obj);
+  if (obj == 0) printf("%c", BACKSPACE);
+
+  // Input
+  while (true) {
+    // Navigate
+    if (NavigationPanel(c)) break;
+
+    // Input from ControlPanel
+    c = ControlPanel();
+
+    // Navigate
+    if (NavigationPanel(c)) break;
+
+    if (IsNumericChar(c)) {
+      if (CanExceedMaxValue(obj, c, max)) {
+        NumberInputEventHandle(OnSwallow);
+        continue;
+      }
+
+      obj = obj * 10 + CharToNumber(c);
+      if (obj == 0) continue;
+      printf("%c", c);
+
+      // Call OnChange
+      NumberInputEventHandle(OnChange);
+    } else if (c == BACKSPACE) {
+      if (obj != 0) printf("%c %c", BACKSPACE, BACKSPACE);
+      obj /= 10;
+
+      // Call OnChange
+      NumberInputEventHandle(OnChange);
+    } else {
+      // Call OnWrong
+      NumberInputEventHandle(OnWrong);
+    }
+
+    if (obj == 0) printf("0%c", BACKSPACE);
+  }
+
+  // Check min and re-create the context
+  obj = obj < min ? min : obj;
+
+  // Setup color
+  SetColor(f_color, b_color);
+
+  // DrawHorLine
+  DrawHorLine(container_size, ' ', position_x, position_y, f_color, b_color);
+  GotoXY(position_x, position_y);
+  printf("%u", obj);
+
+  // Call OnEnd
+  NumberInputEventHandle(OnEnd);
+
+  ApplyColorContext;
+  return c;
+}
+
 /* UInt */
 
 // Limit
