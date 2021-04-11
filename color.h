@@ -1,12 +1,5 @@
 /* Colors */
 
-/* Include */
-
-#include <stdlib.h>
-#include <string.h>
-#include <conio.h>
-#include <windows.h>
-
 /* Define */
 
 // Foreground
@@ -44,9 +37,6 @@
 #define BACKGROUND_LIGHT_PURPLE 0xD0
 #define BACKGROUND_LIGHT_YELLOW 0xE0
 #define BACKGROUND_BRIGHT_WHITE 0xF0
-
-// Date type
-#define color_tp int
 
 // Commands
 #define CLEAR_SCREEN_COMMAND "cls"
