@@ -63,8 +63,3 @@
 #include "cursor.h"
 #include "print.h"
 #include "input.h"
-
-#define LONG_MAX_VALUE 9223372036854775807
-#define LONG_MIN_VALUE -9223372036854775807
-#define LONG_START_INPUT_DEFAULT LongStartInputDefault
-#define LONG_END_INPUT_DEFAULT LongEndInputDefault

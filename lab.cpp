@@ -162,6 +162,9 @@ int main() {
 //   a[0] = '\0';
 //   StringInput(a);
 
+  long long int n = 0;
+  LongInput(n);
+
   GotoXY(0, WINDOW_ROWS - 1);
   system("PAUSE");
   return 0;

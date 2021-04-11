@@ -513,6 +513,136 @@ char IntInput(
   return c;
 }
 
+/* Long */
+
+// Limit
+#define LONG_MAX_VALUE 9223372036854775807
+#define LONG_MIN_VALUE -9223372036854775807
+
+// Define
+#define LONG_INPUT_MAX_VALUE LONG_MAX_VALUE
+#define LONG_INPUT_MIN_VALUE LONG_MIN_VALUE
+#define LONG_INPUT_POSITION_X NUMBER_INPUT_POSITION_X
+#define LONG_INPUT_POSITION_Y NUMBER_INPUT_POSITION_Y
+#define LONG_INPUT_FOREGROUND NUMBER_INPUT_FOREGROUND
+#define LONG_INPUT_BACKGROUND NUMBER_INPUT_BACKGROUND
+#define LONG_INPUT_ON_ACTIVE_FOREGROUND NUMBER_INPUT_ON_ACTIVE_FOREGROUND
+#define LONG_INPUT_ON_ACTIVE_BACKGROUND NUMBER_INPUT_ON_ACTIVE_BACKGROUND
+#define LONG_INPUT_CONTAINER_SIZE 20
+#define LONG_INPUT_NAV_PANEL NUMBER_INPUT_NAV_PANEL
+#define LONG_INPUT_ON_CHANGE_EVENT NUMBER_INPUT_ON_CHANGE_EVENT
+#define LONG_INPUT_ON_SWALLOW_EVENT NUMBER_INPUT_ON_SWALLOW_EVENT
+#define LONG_INPUT_ON_WRONG_EVENT NUMBER_INPUT_ON_WRONG_EVENT
+#define LONG_INPUT_ON_START_EVENT NUMBER_INPUT_ON_START_EVENT
+#define LONG_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
+
+char LongInput(
+  long long int &obj,
+  long long int max = LONG_INPUT_MAX_VALUE,
+  long long int min = LONG_INPUT_MIN_VALUE,
+  position_tp position_x = LONG_INPUT_POSITION_X,
+  position_tp position_y = LONG_INPUT_POSITION_Y,
+  color_tp f_color = LONG_INPUT_FOREGROUND,
+  color_tp b_color = LONG_INPUT_BACKGROUND,
+  color_tp on_active_f_color = LONG_INPUT_ON_ACTIVE_FOREGROUND,
+  color_tp on_active_b_color = LONG_INPUT_ON_ACTIVE_BACKGROUND,
+  size_tp container_size = LONG_INPUT_CONTAINER_SIZE,
+  bool (*NavigationPanel)(char) = LONG_INPUT_NAV_PANEL,
+  NumberInputEventPrototype(OnChange, long long int) = LONG_INPUT_ON_CHANGE_EVENT,
+  NumberInputEventPrototype(OnSwallow, long long int) = LONG_INPUT_ON_SWALLOW_EVENT,
+  NumberInputEventPrototype(OnWrong, long long int) = LONG_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnStart, long long int) = LONG_INPUT_ON_START_EVENT,
+  NumberInputEventPrototype(OnEnd, long long int) = LONG_INPUT_ON_END_EVENT
+) {
+  // Initialize
+  SaveColorContext;
+
+  // Setup color
+  SetColor(on_active_f_color, on_active_b_color);
+
+  // Draw container
+  DrawHorLine(container_size, ' ', position_x, position_y, on_active_f_color, on_active_b_color);
+
+  // Setup cursor position
+  GotoXY(position_x, position_y);
+
+  // Init stash
+  InitStash;
+
+  // Define c
+  char c = '\0';
+
+  // Call OnStart
+  NumberInputEventHandle(OnStart);
+
+  // Re-create the context
+  printf("%lld", obj);
+  if (obj == 0) printf("%c", BACKSPACE);
+
+  // Sign
+  int sign = obj < 0 ? -1 : 1;
+
+  // Input
+  while (true) {
+    // Navigate
+    if (NavigationPanel(c)) break;
+
+    c = getch();
+
+    // Navigate
+    if (NavigationPanel(c)) break;
+
+    if (IsNumericChar(c)) {
+      if ((sign == 1 && CanExceedMaxValue(obj, c, max)) || (sign == -1 && CanExceedMinValue(obj, c, min))) {
+        NumberInputEventHandle(OnSwallow);
+        continue;
+      }
+
+      obj = obj * 10 + CharToNumber(c) * sign;
+      if (obj == 0) continue;
+      printf("%c", c);
+
+      // Call OnChange
+      NumberInputEventHandle(OnChange);
+    } else if (c == BACKSPACE) {
+      if (obj != 0) printf("%c %c", BACKSPACE, BACKSPACE);
+      else if (obj == 0 && sign == -1) {
+        printf("%c%c  %c%c", BACKSPACE, BACKSPACE, BACKSPACE, BACKSPACE);
+        sign = 1;
+      }
+      obj /= 10;
+
+      // Call OnChange
+      NumberInputEventHandle(OnChange);
+    } else if (c == 45 && obj == 0 && sign == 1) {
+      sign = -1;
+      printf("%c", '-');
+    } else {
+      // Call OnWrong
+      NumberInputEventHandle(OnWrong);
+    }
+
+    if (obj == 0) printf("0%c", BACKSPACE);
+  }
+
+  // Check min and re-create the context
+  obj = obj < min ? min : obj;
+
+  // Setup color
+  SetColor(f_color, b_color);
+
+  // DrawHorLine
+  DrawHorLine(container_size, ' ', position_x, position_y, f_color, b_color);
+  GotoXY(position_x, position_y);
+  printf("%lld", obj);
+
+  // Call OnEnd
+  NumberInputEventHandle(OnEnd);
+
+  ApplyColorContext;
+  return c;
+}
+
 /* String */
 
 // Define
