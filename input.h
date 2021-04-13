@@ -45,6 +45,7 @@ char ControlPanel() {
 /* Navigation Panel */
 
 // Define
+#define __NavigationPanelPrototype__ bool (*NavigationPanel)(char)
 #define STANDARD_NAV_PANEL StandardNavPanel
 #define FULL_ARROW_NAV_PANEL FullArrowNavPanel
 
@@ -59,7 +60,7 @@ bool FullArrowNavPanel(char c) {
 }
 
 /* Valid character */
-
+#define ValidCharacterPrototype char (*ValidCharacter)(char)
 #define NUMBER_VALID_CHAR NumberValidChar
 #define ALPHABET_NUMBER_UNDERSCORE_VALID_CHAR AlphabetNumberUnderscoreValidChar
 
@@ -75,6 +76,9 @@ char AlphabetNumberUnderscoreValidChar(char c) {
 
   return '\0';
 }
+
+/* PrintStyle */
+#define PrintStylePrototype(data_type) void (*PrintStyle)(data_type, position_tp, position_tp, color_tp, color_tp, size_tp)
 
 /* Number Input */
 
@@ -123,9 +127,9 @@ char AlphabetNumberUnderscoreValidChar(char c) {
                                                         )
 
 #define NumberInputEventHandle(event_name) if (event_name != NULL) { \
-                                             SaveStash; \
+                                             __SaveStash__; \
                                              NumberInputEventCall(event_name); \
-                                             ApplyStash; \
+                                             __ApplyStash__; \
                                            }
 
 #define NUMBER_INPUT_POSITION_X INPUT_POSITION_X
@@ -136,8 +140,8 @@ char AlphabetNumberUnderscoreValidChar(char c) {
 #define NUMBER_INPUT_ON_ACTIVE_BACKGROUND INPUT_ON_ACTIVE_BACKGROUND
 #define NUMBER_INPUT_NAV_PANEL INPUT_NAV_PANEL
 #define NUMBER_INPUT_ON_CHANGE_EVENT NULL
-#define NUMBER_INPUT_ON_SWALLOW_EVENT NULL
-#define NUMBER_INPUT_ON_WRONG_EVENT NULL
+#define NUMBER_INPUT_ON_EXCEED_EVENT NULL
+#define NUMBER_INPUT_ON_INVALID_EVENT NULL
 #define NUMBER_INPUT_ON_START_EVENT NULL
 #define NUMBER_INPUT_ON_END_EVENT NULL
 
@@ -159,8 +163,8 @@ char AlphabetNumberUnderscoreValidChar(char c) {
 #define USHORT_INPUT_CONTAINER_SIZE 5
 #define USHORT_INPUT_NAV_PANEL NUMBER_INPUT_NAV_PANEL
 #define USHORT_INPUT_ON_CHANGE_EVENT NUMBER_INPUT_ON_CHANGE_EVENT
-#define USHORT_INPUT_ON_SWALLOW_EVENT NUMBER_INPUT_ON_SWALLOW_EVENT
-#define USHORT_INPUT_ON_WRONG_EVENT NUMBER_INPUT_ON_WRONG_EVENT
+#define USHORT_INPUT_ON_EXCEED_EVENT NUMBER_INPUT_ON_EXCEED_EVENT
+#define USHORT_INPUT_ON_INVALID_EVENT NUMBER_INPUT_ON_INVALID_EVENT
 #define USHORT_INPUT_ON_START_EVENT NUMBER_INPUT_ON_START_EVENT
 #define USHORT_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
 
@@ -175,15 +179,15 @@ char UShortInput(
   color_tp on_active_f_color = USHORT_INPUT_ON_ACTIVE_FOREGROUND,
   color_tp on_active_b_color = USHORT_INPUT_ON_ACTIVE_BACKGROUND,
   size_tp container_size = USHORT_INPUT_CONTAINER_SIZE,
-  bool (*NavigationPanel)(char) = USHORT_INPUT_NAV_PANEL,
+  __NavigationPanelPrototype__ = USHORT_INPUT_NAV_PANEL,
   NumberInputEventPrototype(OnChange, unsigned short int) = USHORT_INPUT_ON_CHANGE_EVENT,
-  NumberInputEventPrototype(OnSwallow, unsigned short int) = USHORT_INPUT_ON_SWALLOW_EVENT,
-  NumberInputEventPrototype(OnWrong, unsigned short int) = USHORT_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnExceed, unsigned short int) = USHORT_INPUT_ON_EXCEED_EVENT,
+  NumberInputEventPrototype(OnInvalid, unsigned short int) = USHORT_INPUT_ON_INVALID_EVENT,
   NumberInputEventPrototype(OnStart, unsigned short int) = USHORT_INPUT_ON_START_EVENT,
   NumberInputEventPrototype(OnEnd, unsigned short int) = USHORT_INPUT_ON_END_EVENT
 ) {
   // Initialize
-  SaveColorContext;
+  __SaveColorContext__;
 
   // Setup color
   SetColor(on_active_f_color, on_active_b_color);
@@ -195,7 +199,7 @@ char UShortInput(
   GotoXY(position_x, position_y);
 
   // Init stash
-  InitStash;
+  __InitStash__;
 
   // Define c
   char c = '\0';
@@ -219,8 +223,8 @@ char UShortInput(
     if (NavigationPanel(c)) break;
 
     if (IsNumericChar(c)) {
-      if (CanExceedMaxValue(obj, c, max)) {
-        NumberInputEventHandle(OnSwallow);
+      if (CanExceedMaxValue(obj, c, max) || CanExceedMinValue(obj, c, min)) {
+        NumberInputEventHandle(OnExceed);
         continue;
       }
 
@@ -237,8 +241,8 @@ char UShortInput(
       // Call OnChange
       NumberInputEventHandle(OnChange);
     } else {
-      // Call OnWrong
-      NumberInputEventHandle(OnWrong);
+      // Call OnInvalid
+      NumberInputEventHandle(OnInvalid);
     }
 
     if (obj == 0) printf("0%c", BACKSPACE);
@@ -258,7 +262,7 @@ char UShortInput(
   // Call OnEnd
   NumberInputEventHandle(OnEnd);
 
-  ApplyColorContext;
+ __ApplyColorContext__;
   return c;
 }
 
@@ -280,8 +284,8 @@ char UShortInput(
 #define UINT_INPUT_CONTAINER_SIZE 10
 #define UINT_INPUT_NAV_PANEL NUMBER_INPUT_NAV_PANEL
 #define UINT_INPUT_ON_CHANGE_EVENT NUMBER_INPUT_ON_CHANGE_EVENT
-#define UINT_INPUT_ON_SWALLOW_EVENT NUMBER_INPUT_ON_SWALLOW_EVENT
-#define UINT_INPUT_ON_WRONG_EVENT NUMBER_INPUT_ON_WRONG_EVENT
+#define UINT_INPUT_ON_EXCEED_EVENT NUMBER_INPUT_ON_EXCEED_EVENT
+#define UINT_INPUT_ON_INVALID_EVENT NUMBER_INPUT_ON_INVALID_EVENT
 #define UINT_INPUT_ON_START_EVENT NUMBER_INPUT_ON_START_EVENT
 #define UINT_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
 
@@ -298,13 +302,13 @@ char UIntInput(
   size_tp container_size = UINT_INPUT_CONTAINER_SIZE,
   bool (*NavigationPanel)(char) = UINT_INPUT_NAV_PANEL,
   NumberInputEventPrototype(OnChange, unsigned int) = UINT_INPUT_ON_CHANGE_EVENT,
-  NumberInputEventPrototype(OnSwallow, unsigned int) = UINT_INPUT_ON_SWALLOW_EVENT,
-  NumberInputEventPrototype(OnWrong, unsigned int) = UINT_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnExceed, unsigned int) = UINT_INPUT_ON_EXCEED_EVENT,
+  NumberInputEventPrototype(OnInvalid, unsigned int) = UINT_INPUT_ON_INVALID_EVENT,
   NumberInputEventPrototype(OnStart, unsigned int) = UINT_INPUT_ON_START_EVENT,
   NumberInputEventPrototype(OnEnd, unsigned int) = UINT_INPUT_ON_END_EVENT
 ) {
   // Initialize
-  SaveColorContext;
+  __SaveColorContext__;
 
   // Setup color
   SetColor(on_active_f_color, on_active_b_color);
@@ -316,7 +320,7 @@ char UIntInput(
   GotoXY(position_x, position_y);
 
   // Init stash
-  InitStash;
+  __InitStash__;
 
   // Define c
   char c = '\0';
@@ -341,7 +345,7 @@ char UIntInput(
 
     if (IsNumericChar(c)) {
       if (CanExceedMaxValue(obj, c, max)) {
-        NumberInputEventHandle(OnSwallow);
+        NumberInputEventHandle(OnExceed);
         continue;
       }
 
@@ -358,8 +362,8 @@ char UIntInput(
       // Call OnChange
       NumberInputEventHandle(OnChange);
     } else {
-      // Call OnWrong
-      NumberInputEventHandle(OnWrong);
+      // Call OnInvalid
+      NumberInputEventHandle(OnInvalid);
     }
 
     if (obj == 0) printf("0%c", BACKSPACE);
@@ -379,7 +383,7 @@ char UIntInput(
   // Call OnEnd
   NumberInputEventHandle(OnEnd);
 
-  ApplyColorContext;
+ __ApplyColorContext__;
   return c;
 }
 
@@ -401,8 +405,8 @@ char UIntInput(
 #define ULONG_INPUT_CONTAINER_SIZE 20
 #define ULONG_INPUT_NAV_PANEL NUMBER_INPUT_NAV_PANEL
 #define ULONG_INPUT_ON_CHANGE_EVENT NUMBER_INPUT_ON_CHANGE_EVENT
-#define ULONG_INPUT_ON_SWALLOW_EVENT NUMBER_INPUT_ON_SWALLOW_EVENT
-#define ULONG_INPUT_ON_WRONG_EVENT NUMBER_INPUT_ON_WRONG_EVENT
+#define ULONG_INPUT_ON_EXCEED_EVENT NUMBER_INPUT_ON_EXCEED_EVENT
+#define ULONG_INPUT_ON_INVALID_EVENT NUMBER_INPUT_ON_INVALID_EVENT
 #define ULONG_INPUT_ON_START_EVENT NUMBER_INPUT_ON_START_EVENT
 #define ULONG_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
 
@@ -419,13 +423,13 @@ char ULongInput(
   size_tp container_size = ULONG_INPUT_CONTAINER_SIZE,
   bool (*NavigationPanel)(char) = ULONG_INPUT_NAV_PANEL,
   NumberInputEventPrototype(OnChange, unsigned long long int) = ULONG_INPUT_ON_CHANGE_EVENT,
-  NumberInputEventPrototype(OnSwallow, unsigned long long int) = ULONG_INPUT_ON_SWALLOW_EVENT,
-  NumberInputEventPrototype(OnWrong, unsigned long long int) = ULONG_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnExceed, unsigned long long int) = ULONG_INPUT_ON_EXCEED_EVENT,
+  NumberInputEventPrototype(OnInvalid, unsigned long long int) = ULONG_INPUT_ON_INVALID_EVENT,
   NumberInputEventPrototype(OnStart, unsigned long long int) = ULONG_INPUT_ON_START_EVENT,
   NumberInputEventPrototype(OnEnd, unsigned long long int) = ULONG_INPUT_ON_END_EVENT
 ) {
   // Initialize
-  SaveColorContext;
+  __SaveColorContext__;
 
   // Setup color
   SetColor(on_active_f_color, on_active_b_color);
@@ -437,7 +441,7 @@ char ULongInput(
   GotoXY(position_x, position_y);
 
   // Init stash
-  InitStash;
+  __InitStash__;
 
   // Define c
   char c = '\0';
@@ -461,8 +465,8 @@ char ULongInput(
     if (NavigationPanel(c)) break;
 
     if (IsNumericChar(c)) {
-      if (CanExceedMaxValue(obj, c, max)) {
-        NumberInputEventHandle(OnSwallow);
+      if (CanExceedMaxValue(obj, c, max) || CanExceedMinValue(obj, c, max)) {
+        NumberInputEventHandle(OnExceed);
         continue;
       }
 
@@ -479,8 +483,8 @@ char ULongInput(
       // Call OnChange
       NumberInputEventHandle(OnChange);
     } else {
-      // Call OnWrong
-      NumberInputEventHandle(OnWrong);
+      // Call OnInvalid
+      NumberInputEventHandle(OnInvalid);
     }
 
     if (obj == 0) printf("0%c", BACKSPACE);
@@ -500,7 +504,7 @@ char ULongInput(
   // Call OnEnd
   NumberInputEventHandle(OnEnd);
 
-  ApplyColorContext;
+ __ApplyColorContext__;
   return c;
 }
 
@@ -522,8 +526,8 @@ char ULongInput(
 #define SHORT_INPUT_CONTAINER_SIZE 11
 #define SHORT_INPUT_NAV_PANEL NUMBER_INPUT_NAV_PANEL
 #define SHORT_INPUT_ON_CHANGE_EVENT NUMBER_INPUT_ON_CHANGE_EVENT
-#define SHORT_INPUT_ON_SWALLOW_EVENT NUMBER_INPUT_ON_SWALLOW_EVENT
-#define SHORT_INPUT_ON_WRONG_EVENT NUMBER_INPUT_ON_WRONG_EVENT
+#define SHORT_INPUT_ON_EXCEED_EVENT NUMBER_INPUT_ON_EXCEED_EVENT
+#define SHORT_INPUT_ON_INVALID_EVENT NUMBER_INPUT_ON_INVALID_EVENT
 #define SHORT_INPUT_ON_START_EVENT NUMBER_INPUT_ON_START_EVENT
 #define SHORT_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
 
@@ -540,13 +544,13 @@ char ShortInput(
   size_tp container_size = SHORT_INPUT_CONTAINER_SIZE,
   bool (*NavigationPanel)(char) = SHORT_INPUT_NAV_PANEL,
   NumberInputEventPrototype(OnChange, short int) = SHORT_INPUT_ON_CHANGE_EVENT,
-  NumberInputEventPrototype(OnSwallow, short int) = SHORT_INPUT_ON_SWALLOW_EVENT,
-  NumberInputEventPrototype(OnWrong, short int) = SHORT_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnExceed, short int) = SHORT_INPUT_ON_EXCEED_EVENT,
+  NumberInputEventPrototype(OnInvalid, short int) = SHORT_INPUT_ON_INVALID_EVENT,
   NumberInputEventPrototype(OnStart, short int) = SHORT_INPUT_ON_START_EVENT,
   NumberInputEventPrototype(OnEnd, short int) = SHORT_INPUT_ON_END_EVENT
 ) {
   // Initialize
-  SaveColorContext;
+  __SaveColorContext__;
 
   // Setup color
   SetColor(on_active_f_color, on_active_b_color);
@@ -558,7 +562,7 @@ char ShortInput(
   GotoXY(position_x, position_y);
 
   // Init stash
-  InitStash;
+  __InitStash__;
 
   // Define c
   char c = '\0';
@@ -585,7 +589,7 @@ char ShortInput(
 
     if (IsNumericChar(c)) {
       if ((sign == 1 && CanExceedMaxValue(obj, c, max)) || (sign == -1 && CanExceedMinValue(obj, c, min))) {
-        NumberInputEventHandle(OnSwallow);
+        NumberInputEventHandle(OnExceed);
         continue;
       }
 
@@ -609,8 +613,8 @@ char ShortInput(
       sign = -1;
       printf("%c", '-');
     } else {
-      // Call OnWrong
-      NumberInputEventHandle(OnWrong);
+      // Call OnInvalid
+      NumberInputEventHandle(OnInvalid);
     }
 
     if (obj == 0) printf("0%c", BACKSPACE);
@@ -630,7 +634,7 @@ char ShortInput(
   // Call OnEnd
   NumberInputEventHandle(OnEnd);
 
-  ApplyColorContext;
+ __ApplyColorContext__;
   return c;
 }
 
@@ -652,8 +656,8 @@ char ShortInput(
 #define INT_INPUT_CONTAINER_SIZE 11
 #define INT_INPUT_NAV_PANEL NUMBER_INPUT_NAV_PANEL
 #define INT_INPUT_ON_CHANGE_EVENT NUMBER_INPUT_ON_CHANGE_EVENT
-#define INT_INPUT_ON_SWALLOW_EVENT NUMBER_INPUT_ON_SWALLOW_EVENT
-#define INT_INPUT_ON_WRONG_EVENT NUMBER_INPUT_ON_WRONG_EVENT
+#define INT_INPUT_ON_EXCEED_EVENT NUMBER_INPUT_ON_EXCEED_EVENT
+#define INT_INPUT_ON_INVALID_EVENT NUMBER_INPUT_ON_INVALID_EVENT
 #define INT_INPUT_ON_START_EVENT NUMBER_INPUT_ON_START_EVENT
 #define INT_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
 
@@ -670,13 +674,13 @@ char IntInput(
   size_tp container_size = INT_INPUT_CONTAINER_SIZE,
   bool (*NavigationPanel)(char) = INT_INPUT_NAV_PANEL,
   NumberInputEventPrototype(OnChange, int) = INT_INPUT_ON_CHANGE_EVENT,
-  NumberInputEventPrototype(OnSwallow, int) = INT_INPUT_ON_SWALLOW_EVENT,
-  NumberInputEventPrototype(OnWrong, int) = INT_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnExceed, int) = INT_INPUT_ON_EXCEED_EVENT,
+  NumberInputEventPrototype(OnInvalid, int) = INT_INPUT_ON_INVALID_EVENT,
   NumberInputEventPrototype(OnStart, int) = INT_INPUT_ON_START_EVENT,
   NumberInputEventPrototype(OnEnd, int) = INT_INPUT_ON_END_EVENT
 ) {
   // Initialize
-  SaveColorContext;
+  __SaveColorContext__;
 
   // Setup color
   SetColor(on_active_f_color, on_active_b_color);
@@ -688,7 +692,7 @@ char IntInput(
   GotoXY(position_x, position_y);
 
   // Init stash
-  InitStash;
+  __InitStash__;
 
   // Define c
   char c = '\0';
@@ -715,7 +719,7 @@ char IntInput(
 
     if (IsNumericChar(c)) {
       if ((sign == 1 && CanExceedMaxValue(obj, c, max)) || (sign == -1 && CanExceedMinValue(obj, c, min))) {
-        NumberInputEventHandle(OnSwallow);
+        NumberInputEventHandle(OnExceed);
         continue;
       }
 
@@ -739,8 +743,8 @@ char IntInput(
       sign = -1;
       printf("%c", '-');
     } else {
-      // Call OnWrong
-      NumberInputEventHandle(OnWrong);
+      // Call OnInvalid
+      NumberInputEventHandle(OnInvalid);
     }
 
     if (obj == 0) printf("0%c", BACKSPACE);
@@ -760,7 +764,7 @@ char IntInput(
   // Call OnEnd
   NumberInputEventHandle(OnEnd);
 
-  ApplyColorContext;
+ __ApplyColorContext__;
   return c;
 }
 
@@ -782,8 +786,8 @@ char IntInput(
 #define LONG_INPUT_CONTAINER_SIZE 20
 #define LONG_INPUT_NAV_PANEL NUMBER_INPUT_NAV_PANEL
 #define LONG_INPUT_ON_CHANGE_EVENT NUMBER_INPUT_ON_CHANGE_EVENT
-#define LONG_INPUT_ON_SWALLOW_EVENT NUMBER_INPUT_ON_SWALLOW_EVENT
-#define LONG_INPUT_ON_WRONG_EVENT NUMBER_INPUT_ON_WRONG_EVENT
+#define LONG_INPUT_ON_EXCEED_EVENT NUMBER_INPUT_ON_EXCEED_EVENT
+#define LONG_INPUT_ON_INVALID_EVENT NUMBER_INPUT_ON_INVALID_EVENT
 #define LONG_INPUT_ON_START_EVENT NUMBER_INPUT_ON_START_EVENT
 #define LONG_INPUT_ON_END_EVENT NUMBER_INPUT_ON_END_EVENT
 
@@ -800,13 +804,13 @@ char LongInput(
   size_tp container_size = LONG_INPUT_CONTAINER_SIZE,
   bool (*NavigationPanel)(char) = LONG_INPUT_NAV_PANEL,
   NumberInputEventPrototype(OnChange, long long int) = LONG_INPUT_ON_CHANGE_EVENT,
-  NumberInputEventPrototype(OnSwallow, long long int) = LONG_INPUT_ON_SWALLOW_EVENT,
-  NumberInputEventPrototype(OnWrong, long long int) = LONG_INPUT_ON_WRONG_EVENT,
+  NumberInputEventPrototype(OnExceed, long long int) = LONG_INPUT_ON_EXCEED_EVENT,
+  NumberInputEventPrototype(OnInvalid, long long int) = LONG_INPUT_ON_INVALID_EVENT,
   NumberInputEventPrototype(OnStart, long long int) = LONG_INPUT_ON_START_EVENT,
   NumberInputEventPrototype(OnEnd, long long int) = LONG_INPUT_ON_END_EVENT
 ) {
   // Initialize
-  SaveColorContext;
+  __SaveColorContext__;
 
   // Setup color
   SetColor(on_active_f_color, on_active_b_color);
@@ -818,7 +822,7 @@ char LongInput(
   GotoXY(position_x, position_y);
 
   // Init stash
-  InitStash;
+  __InitStash__;
 
   // Define c
   char c = '\0';
@@ -845,7 +849,7 @@ char LongInput(
 
     if (IsNumericChar(c)) {
       if ((sign == 1 && CanExceedMaxValue(obj, c, max)) || (sign == -1 && CanExceedMinValue(obj, c, min))) {
-        NumberInputEventHandle(OnSwallow);
+        NumberInputEventHandle(OnExceed);
         continue;
       }
 
@@ -869,8 +873,8 @@ char LongInput(
       sign = -1;
       printf("%c", '-');
     } else {
-      // Call OnWrong
-      NumberInputEventHandle(OnWrong);
+      // Call OnInvalid
+      NumberInputEventHandle(OnInvalid);
     }
 
     if (obj == 0) printf("0%c", BACKSPACE);
@@ -890,7 +894,7 @@ char LongInput(
   // Call OnEnd
   NumberInputEventHandle(OnEnd);
 
-  ApplyColorContext;
+ __ApplyColorContext__;
   return c;
 }
 
@@ -941,9 +945,9 @@ char LongInput(
                                               )
 
 #define StringInputEventHandle(event_name) if (event_name != NULL) { \
-                                             SaveStash; \
+                                             __SaveStash__; \
                                              StringInputEventCall(event_name); \
-                                             ApplyStash; \
+                                             __ApplyStash__; \
                                            }
 
 #define STRING_INPUT_MAX_LEN 24
@@ -958,8 +962,8 @@ char LongInput(
 #define STRING_INPUT_VALID_CHAR ALPHABET_NUMBER_UNDERSCORE_VALID_CHAR
 #define STRING_INPUT_NAV_PANEL INPUT_NAV_PANEL
 #define STRING_INPUT_ON_CHANGE_EVENT NULL
-#define STRING_INPUT_ON_SWALLOW_EVENT NULL
-#define STRING_INPUT_ON_WRONG_EVENT NULL
+#define STRING_INPUT_ON_EXCEED_EVENT NULL
+#define STRING_INPUT_ON_INVALID_EVENT NULL
 #define STRING_INPUT_ON_START_EVENT NULL
 #define STRING_INPUT_ON_END_EVENT NULL
 
@@ -974,16 +978,16 @@ char StringInput(
   color_tp on_active_f_color = STRING_INPUT_ON_ACTIVE_FOREGROUND,
   color_tp on_active_b_color = STRING_INPUT_ON_ACTIVE_BACKGROUND,
   size_tp container_size = STRING_INPUT_CONTAINER_SIZE,
-  char (*ValidCharacter)(char) = STRING_INPUT_VALID_CHAR,
+  ValidCharacterPrototype = STRING_INPUT_VALID_CHAR,
   bool (*NavigationPanel)(char) = STRING_INPUT_NAV_PANEL,
   StringInputEventPrototype(OnChange) = STRING_INPUT_ON_CHANGE_EVENT,
-  StringInputEventPrototype(OnSwallow) = STRING_INPUT_ON_SWALLOW_EVENT,
-  StringInputEventPrototype(OnWrong) = STRING_INPUT_ON_WRONG_EVENT,
+  StringInputEventPrototype(OnExceed) = STRING_INPUT_ON_EXCEED_EVENT,
+  StringInputEventPrototype(OnInvalid) = STRING_INPUT_ON_INVALID_EVENT,
   StringInputEventPrototype(OnStart) = STRING_INPUT_ON_START_EVENT,
   StringInputEventPrototype(OnEnd) = STRING_INPUT_ON_END_EVENT
 ) {
   // Initialize
-  SaveColorContext;
+  __SaveColorContext__;
 
   // Setup color
   SetColor(on_active_f_color, on_active_b_color);
@@ -995,7 +999,7 @@ char StringInput(
   GotoXY(position_x, position_y);
 
   // Init stash
-  InitStash;
+  __InitStash__;
 
   // Define c
   char c = '\0';
@@ -1011,7 +1015,7 @@ char StringInput(
     // Navigate
     if (NavigationPanel(c)) {
       if (strlen(obj) < min) {
-        StringInputEventHandle(OnWrong);
+        StringInputEventHandle(OnInvalid);
         continue;
       }
 
@@ -1023,7 +1027,7 @@ char StringInput(
     // Navigate
     if (NavigationPanel(c)) {
       if (strlen(obj) < min) {
-        StringInputEventHandle(OnWrong);
+        StringInputEventHandle(OnExceed);
         continue;
       }
 
@@ -1032,7 +1036,7 @@ char StringInput(
 
     if (ValidCharacter(c) != '\0') {
       if (len == max) {
-        StringInputEventHandle(OnSwallow);
+        StringInputEventHandle(OnExceed);
         continue;
       }
 
@@ -1051,7 +1055,7 @@ char StringInput(
 
       StringInputEventHandle(OnChange);
     } else {
-      StringInputEventHandle(OnWrong);
+      StringInputEventHandle(OnInvalid);
     }
   }
 
@@ -1066,7 +1070,6 @@ char StringInput(
   // Call OnEnd
   NumberInputEventHandle(OnEnd);
 
-  ApplyColorContext;
+ __ApplyColorContext__;
   return c;
 }
-

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
+#include <math.h>
 #include <time.h>
 #include <windows.h>
 #include <iostream>
@@ -16,35 +17,35 @@
 #define show(obj) std::cout << obj << std::endl
 
 // Utilities
-#define SaveColorContext color_tp __current_foreground__ = CURRENT_FOREGROUND; \
-                         color_tp __current_background__ = CURRENT_BACKGROUND;
+#define __SaveColorContext__ color_tp __current_foreground__ = CURRENT_FOREGROUND; \
+                             color_tp __current_background__ = CURRENT_BACKGROUND;
 
-#define ApplyColorContext SetColor(__current_foreground__, __current_background__)
+#define __ApplyColorContext__ SetColor(__current_foreground__, __current_background__)
 
-#define SavePositionContext position_tp __position_x__ = CURRENT_CURSOR_POSITION_X; \
-                            position_tp __position_y__ = CURRENT_CURSOR_POSITION_Y
+#define __SavePositionContext__ position_tp __position_x__ = CURRENT_CURSOR_POSITION_X; \
+                                position_tp __position_y__ = CURRENT_CURSOR_POSITION_Y
 
-#define ApplyPositionContext GotoXY(__position_x__, __position_y__)
+#define __ApplyPositionContext__ GotoXY(__position_x__, __position_y__)
 
-#define SaveContext color_tp __current_foreground__ = CURRENT_FOREGROUND; \
-                    color_tp __current_background__ = CURRENT_BACKGROUND; \
-                    position_tp __position_x__ = CURRENT_CURSOR_POSITION_X; \
-                    position_tp __position_y__ = CURRENT_CURSOR_POSITION_Y
+#define __SaveContext__ color_tp __current_foreground__ = CURRENT_FOREGROUND; \
+                        color_tp __current_background__ = CURRENT_BACKGROUND; \
+                        position_tp __position_x__ = CURRENT_CURSOR_POSITION_X; \
+                        position_tp __position_y__ = CURRENT_CURSOR_POSITION_Y
 
-#define ApplyContext GotoXY(__position_x__, __position_y__); \
-                     SetColor(__current_foreground__, __current_background__)
+#define __ApplyContext__ GotoXY(__position_x__, __position_y__); \
+                         SetColor(__current_foreground__, __current_background__)
 
-#define InitStash int __stash_postion_x__; \
-                  int __stash_postion_y__; \
-                  int __stash_b_color__; \
-                  int __stash_f_color__
+#define __InitStash__ int __stash_postion_x__; \
+                      int __stash_postion_y__; \
+                      int __stash_b_color__; \
+                      int __stash_f_color__
 
-#define SaveStash int __stash_postion_x__ = CURRENT_CURSOR_POSITION_X; \
+#define __SaveStash__ int __stash_postion_x__ = CURRENT_CURSOR_POSITION_X; \
                   int __stash_postion_y__ = CURRENT_CURSOR_POSITION_Y; \
                   int __stash_b_color__ = CURRENT_BACKGROUND; \
                   int __stash_f_color__ = CURRENT_FOREGROUND
 
-#define ApplyStash GotoXY(__stash_postion_x__, __stash_postion_y__); \
+#define __ApplyStash__ GotoXY(__stash_postion_x__, __stash_postion_y__); \
                    SetColor(__stash_f_color__, __stash_b_color__)
 
 #define CharToNumber(c) (c - 48)
