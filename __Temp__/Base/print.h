@@ -11,8 +11,8 @@
 #define __ApplyContextArgument__ GotoXY(position_x, position_y); \
                              SetColor(f_color, b_color);
 =======
-#define ContextArgumentsPrint position_tp position_x = CURRENT_CURSOR_POSITION_X, \
-                              position_tp position_y = CURRENT_CURSOR_POSITION_Y, \
+#define ContextArgumentsPrint position_tp position_x = CURSOR_POSITION_X, \
+                              position_tp position_y = CURSOR_POSITION_Y, \
                               color_tp f_color = CURRENT_FOREGROUND, \
                               color_tp b_color = CURRENT_BACKGROUND
 >>>>>>> 83a09e54bef5d6771cf7e79981bb72f3c2d0f7c6:print.h

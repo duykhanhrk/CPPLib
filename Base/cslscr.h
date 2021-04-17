@@ -22,15 +22,15 @@
 
 #define __ApplyColorContext__ SetColor(__current_foreground__, __current_background__)
 
-#define __SavePositionContext__ position_tp __position_x__ = CURRENT_CURSOR_POSITION_X; \
-                                position_tp __position_y__ = CURRENT_CURSOR_POSITION_Y
+#define __SavePositionContext__ position_tp __position_x__ = CURSOR_POSITION_X; \
+                                position_tp __position_y__ = CURSOR_POSITION_Y
 
 #define __ApplyPositionContext__ GotoXY(__position_x__, __position_y__)
 
 #define __SaveContext__ color_tp __current_foreground__ = CURRENT_FOREGROUND; \
                         color_tp __current_background__ = CURRENT_BACKGROUND; \
-                        position_tp __position_x__ = CURRENT_CURSOR_POSITION_X; \
-                        position_tp __position_y__ = CURRENT_CURSOR_POSITION_Y
+                        position_tp __position_x__ = CURSOR_POSITION_X; \
+                        position_tp __position_y__ = CURSOR_POSITION_Y
 
 #define __ApplyContext__ GotoXY(__position_x__, __position_y__); \
                          SetColor(__current_foreground__, __current_background__)
@@ -40,8 +40,8 @@
                       int __stash_b_color__; \
                       int __stash_f_color__
 
-#define __SaveStash__ int __stash_postion_x__ = CURRENT_CURSOR_POSITION_X; \
-                  int __stash_postion_y__ = CURRENT_CURSOR_POSITION_Y; \
+#define __SaveStash__ int __stash_postion_x__ = CURSOR_POSITION_X; \
+                  int __stash_postion_y__ = CURSOR_POSITION_Y; \
                   int __stash_b_color__ = CURRENT_BACKGROUND; \
                   int __stash_f_color__ = CURRENT_FOREGROUND
 
