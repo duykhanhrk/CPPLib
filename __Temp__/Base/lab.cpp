@@ -33,19 +33,19 @@ time_t DateParse(
                                                                   month = time_info->tm_mon + 1; \
                                                                   day = time_info->tm_mday;
 
-#define __SetDay__(value) __SavePositionContext__; \
+#define __SetDay__(value) __SaveCursorPositionContext__; \
                           day = value; \
                           GotoXY(position_x, position_y); \
                           if (day < 10) printf("0%u", day); \
                           else printf("%u", day); \
-                          __ApplyPositionContext__;
+                          __ApplyCursorPositionContext__;
 
-#define __SetMonth__(value) __SavePositionContext__; \
+#define __SetMonth__(value) __SaveCursorPositionContext__; \
                             month = value; \
                             GotoXY(position_x + 3, position_y); \
                             if (month < 10) printf("0%u", month); \
                             else printf("%u", day); \
-                            __ApplyPositionContext__
+                            __ApplyCursorPositionContext__
 
 
 // Define

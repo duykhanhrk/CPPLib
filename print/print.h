@@ -1,8 +1,8 @@
 /* Print */
 
 /* Define */
-#define ContextArgumentsPrint position_tp position_x = CURRENT_CURSOR_POSITION_X, \
-                              position_tp position_y = CURRENT_CURSOR_POSITION_Y, \
+#define ContextArgumentsPrint position_tp position_x = CURSOR_POSITION_X, \
+                              position_tp position_y = CURSOR_POSITION_Y, \
                               color_tp f_color = CURRENT_FOREGROUND, \
                               color_tp b_color = CURRENT_BACKGROUND
 
@@ -295,7 +295,7 @@ void DrawRec(size_tp width, size_tp height, char chr = DRAW_CHR_DEFAULT, Context
   line[width] = '\0';
 
   printf("%s", line);
-  GotoXY(x, y + height - 1);
+  GotoXY(position_x, position_y + height - 1);
   printf("%s", line);
   delete [] line;
 
@@ -307,7 +307,7 @@ void DrawRec(size_tp width, size_tp height, char chr = DRAW_CHR_DEFAULT, Context
     printf("%c", chr);
   }
 
-  GotoXY(x, y + height);
+  GotoXY(position_x, position_y + height);
   ApplyColorContext;
 }
 
