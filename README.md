@@ -3,7 +3,7 @@ File name: cslscr.h
 ## Context
 Folder: context
 #### Color
-Foregournd:
+Foreground
 ```
   FOREGROUND_BLACK
   FOREGROUND_BLUE
@@ -22,7 +22,7 @@ Foregournd:
   FOREGROUND_LIGHT_YELLOW
   FOREGROUND_BRIGHT_WHITE
 ```
-Background:
+Background
 ```
   BACKGROUND_BLACK
   BACKGROUND_BLUE
@@ -41,12 +41,12 @@ Background:
   BACKGROUND_LIGHT_YELLOW
   BACKGROUND_BRIGHT_WHITE
 ```
-Defines:
+Defines
 ```
-  CURRENT_FOREGROUND - current foreground color (color_tp)
-  CURRENT_BACKGROUND - current background color (color_tp)
+  CURRENT_FOREGROUND
+  CURRENT_BACKGROUND
 ```
-Methods:
+Methods
 ```
   void ClearScreen()
   void ClearScreen(color_tp b_color)
