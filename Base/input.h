@@ -2,28 +2,28 @@
 
 /* Define */
 
-/* Logic trigger */
+// Keys
+#define ENTER 13
+#define ESC 27
+#define BACKSPACE 8
+#define KEY_UP -1
+#define KEY_DOWN -2
+#define KEY_LEFT -3
+#define KEY_RIGHT -4
 
-<<<<<<< HEAD:__Temp__/Base/input.h
-#define INPUT_POSITION_X CURSOR_POSITION_X
-#define INPUT_POSITION_Y CURSOR_POSITION_Y
+#define INPUT_POSITION_X CURRENT_CURSOR_POSITION_X
+#define INPUT_POSITION_Y CURRENT_CURSOR_POSITION_Y
 #define INPUT_FOREGROUND CURRENT_FOREGROUND
 #define INPUT_BACKGROUND CURRENT_BACKGROUND
 #define INPUT_ON_ACTIVE_FOREGROUND CURRENT_FOREGROUND
 #define INPUT_ON_ACTIVE_BACKGROUND CURRENT_BACKGROUND
 #define INPUT_NAV_PANEL STANDARD_NAV_PANEL
-=======
-#define InputLogicTriggerPrototype(logic_name, obj_dtype, max_dtype, min_dtype) \
-        bool (*logic_name)(char, value_dtype, max_dtype, min_dtype, position_tp, position_tp, color_tp, color_tp)
->>>>>>> 83a09e54bef5d6771cf7e79981bb72f3c2d0f7c6:input.h
 
-#define InputLogicTriggerInit(logic_name, obj_dtype, max_dtype, min_dtype) \
-        bool logic_name(char c, obj_dtype obj, max_dtype max, min_dtype min, position_tp position_x, position_tp position_y, color_tp f_color, color_tp b_color)
+/* Prototype */
+char ControlPanel();
 
-#define InputLogicTriggerCall(logic_name) \
-        logic_name(c, obj, position_x, position_y, f_color, b_color);
+/* Logic */
 
-<<<<<<< HEAD:__Temp__/Base/input.h
 /* Control panel */
 char ControlPanel() {
   char c = getch();
@@ -500,14 +500,10 @@ char ULongInput(
   DrawHorLine(container_size, ' ', position_x, position_y, f_color, b_color);
   GotoXY(position_x, position_y);
   printf("%llu", obj);
-=======
-#define InputLogicTriggerHandle(logic_name) \
-        InputLogicTriggerCall(logic_name)
->>>>>>> 83a09e54bef5d6771cf7e79981bb72f3c2d0f7c6:input.h
 
-/* Control trigger */
+  // Call OnEnd
+  NumberInputEventHandle(OnEnd);
 
-<<<<<<< HEAD:__Temp__/Base/input.h
  __ApplyColorContext__;
   return c;
 }
@@ -821,18 +817,10 @@ char LongInput(
 
   // Draw container
   DrawHorLine(container_size, ' ', position_x, position_y, on_active_f_color, on_active_b_color);
-=======
-#define InputControlTriggerPrototype(control_name, obj_dtype, max_dtype, min_dtype) \
-        char (*control_name)(char, value_dtype, max_dtype, min_dtype, position_tp, position_tp, color_tp, color_tp)
 
-#define InputControlTriggerInit(control_name, obj_dtype, max_dtype, min_dtype) \
-        char control_name(char c, obj_dtype obj, max_dtype max, min_dtype min, position_tp position_x, position_tp position_y, color_tp f_color, color_tp b_color)
->>>>>>> 83a09e54bef5d6771cf7e79981bb72f3c2d0f7c6:input.h
+  // Setup cursor position
+  GotoXY(position_x, position_y);
 
-#define InputControlTriggerCall(control_name) \
-        control_name(c, obj, position_x, position_y, f_color, b_color);
-
-<<<<<<< HEAD:__Temp__/Base/input.h
   // Init stash
   __InitStash__;
 
@@ -909,26 +897,53 @@ char LongInput(
  __ApplyColorContext__;
   return c;
 }
-=======
-#define InputControlTriggerHandle(control_name) \
-        InputControlTriggerCall(control_name)
->>>>>>> 83a09e54bef5d6771cf7e79981bb72f3c2d0f7c6:input.h
 
-/* Perform trigger */
+/* String */
 
-#define InputPerformTriggerPrototype(perform_name, obj_dtype, max_dtype, min_dtype) \
-        void (*perform_name)(char, value_dtype, max_dtype, min_dtype, position_tp, position_tp, color_tp, color_tp)
+// Define
 
-#define InputPerformTriggerInit(perform_name, obj_dtype, max_dtype, min_dtype) \
-        void perform_name(char c, obj_dtype obj, max_dtype max, min_dtype min, position_tp position_x, position_tp position_y, color_tp f_color, color_tp b_color)
+#define StringInputEvent(identity) void identity( \
+                                     char &c, \
+                                     char * obj, \
+                                     unsigned short int &max, \
+                                     unsigned short int &min, \
+                                     position_tp &position_x, \
+                                     position_tp &position_y, \
+                                     color_tp &f_color, \
+                                     color_tp &b_color, \
+                                     color_tp &on_active_f_color, \
+                                     color_tp &on_active_b_color, \
+                                     size_tp &container_size \
+                                   )
 
-#define InputPerformTriggerCall(perform_name) \
-        perform_name(c, obj, position_x, position_y, f_color, b_color);
+#define StringInputEventCall(event_name) event_name( \
+                                           c, \
+                                           obj, \
+                                           max, \
+                                           min, \
+                                           position_x, \
+                                           position_y, \
+                                           f_color, \
+                                           b_color, \
+                                           on_active_f_color, \
+                                           on_active_b_color, \
+                                           container_size \
+                                         )
 
-#define InputPerformTriggerHandle(perform_name) \
-        InputPerformTriggerCall(perform_name)
+#define StringInputEventPrototype(event_name) void (*event_name)( \
+                                                char&, \
+                                                char*, \
+                                                unsigned short int&, \
+                                                unsigned short int&, \
+                                                position_tp&, \
+                                                position_tp&, \
+                                                color_tp&, \
+                                                color_tp&, \
+                                                color_tp&, \
+                                                color_tp&, \
+                                                size_tp& \
+                                              )
 
-<<<<<<< HEAD:__Temp__/Base/input.h
 #define StringInputEventHandle(event_name) if (event_name != NULL) { \
                                              __SaveStash__; \
                                              StringInputEventCall(event_name); \
@@ -973,27 +988,13 @@ char StringInput(
 ) {
   // Initialize
   __SaveColorContext__;
-=======
-/* Event trigger */
 
-#define InputEventTriggerPrototype(event_name, obj_dtype, max_dtype, min_dtype) \
-        void (*event_name)(char&, value_dtype, max_dtype, min_dtype, position_tp, position_tp, color_tp, color_tp)
+  // Setup color
+  SetColor(on_active_f_color, on_active_b_color);
 
-#define InputEventTriggerInit(event_name, obj_dtype, max_dtype, min_dtype) \
-        void event_name(char &c, obj_dtype obj, max_dtype max, min_dtype min, position_tp position_x, position_tp position_y, color_tp f_color, color_tp b_color)
->>>>>>> 83a09e54bef5d6771cf7e79981bb72f3c2d0f7c6:input.h
+  // Draw container
+  DrawHorLine(container_size, ' ', position_x, position_y, on_active_f_color, on_active_b_color);
 
-#define InputEventTriggerCall(event_name) \
-        event_name(c, obj, position_x, position_y, f_color, b_color);
-
-#define InputEventTriggerHandle(event_name) \
-        if (event_name != NULL) { \
-          SaveStash; \
-          InputEventTriggerCall(event_name); \
-          ApplyStash; \
-        }
-
-<<<<<<< HEAD:__Temp__/Base/input.h
   // Setup cursor position
   GotoXY(position_x, position_y);
 
@@ -1020,18 +1021,8 @@ char StringInput(
 
       break;
     }
-=======
-// Control Panel
-char ControlPanel() {
-  char c = getch();
->>>>>>> 83a09e54bef5d6771cf7e79981bb72f3c2d0f7c6:input.h
 
-  if (c == 13) return ENTER;
-  else if (c == 27) return ESC;
-  else if (c == 8) return BACKSPACE;
-  else if (c == -32) {
     c = getch();
-<<<<<<< HEAD:__Temp__/Base/input.h
 
     // Navigate
     if (NavigationPanel(c)) {
@@ -1082,17 +1073,3 @@ char ControlPanel() {
  __ApplyColorContext__;
   return c;
 }
-=======
-    if (c == 75) return KEY_LEFT;
-    else if (c == 77) return KEY_RIGHT;
-    else if (c == 80) return KEY_DOWN;
-    else if (c == 72) return KEY_UP;
-    return '\0';
-  }
-  return c;
-}
-
-/* Inlucde features */
-#include "navpn.h"
-#include "charset.h"
->>>>>>> 83a09e54bef5d6771cf7e79981bb72f3c2d0f7c6:input.h

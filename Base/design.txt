@@ -1,0 +1,100 @@
+Stash
+  InitStash
+  SaveStash
+  ApplyStash
+Context
+  SaveContext
+  ApplyContext
+  SaveColorContext;
+  ApplyColorContext;
+  SavePositionContext;
+  ApplyPositionContext;
+  ApplyArgumentContext;
+  ApplyArgumentColorContext;
+  ApplyArgumentPostionContext;
+
+[Number]
+  Interger
+    Unsigned: Short, Int, Long Input()
+    Signed: Short, Int, Long Input()
+  Real
+    Unsigned: Float, Double Input()
+    Signed: Float, Double Input()
+  (feature):
+    value, max, min,
+    context(colors, positions),
+    container(colors, size),
+    control(nav_panel, character_set),
+    perform(express_text)
+    event(OnEnter, OnChange, OnViolate, OnLeave)
+
+[String]
+  String INput
+  (feature):
+    value, max, min,
+    context(colors, positions),
+    container(colors, size),
+    control(nav_panel, character_set),
+    perform(express_text),
+    event(OnEnter, OnChange, OnViolate, OnLeave)
+
+[DateTime]
+  Date
+  Time
+  DateTime
+  (feature):
+    value, max, min,
+    context(colors, positions),
+    container(colors, size),
+    control(nav_panel, character_set),
+    perform(express_text),
+    event(OnEnter, OnChange, OnViolate, OnLeave)
+
+control
+  prototype
+    char (*control)(c, value, max, min, context, container)
+  Init
+    char control(c, value, max, min, context, container)
+  Call
+    char control(c, value, max, min, context, container)
+  Handle
+    if (control != NULL) Call;
+    else Default;
+perform
+  prototype
+    void (*perform)(c, value, max, min, context, container)
+  Init
+    void perform(c, value, max, min, context, container)
+  Call
+    void perform(c, value, max, min, context, container)
+  Handle
+    if (perform != NULL) Call;
+    els Default;
+event
+  prototype
+    void (*event)(&c, value, max, min, context, container)
+  Init
+    void event(&c, value, max, min, context, container)
+  Call
+    void event(&c, value, max, min, context, container)
+  Handle
+    if (event != NULL) {
+      SaveStash;
+      Call;
+      ApplyStash;
+    }
+
+Print
+  Number Write() | Print() | Echo()
+  String Write() | Print() | Echo()
+  DateTime WriteDT() | PrintDT() | EchoDT()
+  (feature):
+    format(only DateTime), value, context(colors, postions)
+Draw
+  Line(Ver, Hor) DrawLine() | PrintLine() | ReflectLine()
+  size
+  Rectangle DrawRec() | PrintRec() | ReflectRec()
+  size (height, width)
+  RectangleShape  DrawRecShape() | PrintRecShape() | ReflectRecShape()
+  size (height, width)
+
