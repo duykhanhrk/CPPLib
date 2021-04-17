@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #include "cslscr.h"
 
 InputEventTriggerInit(InputOnchage) {
@@ -47,6 +46,3 @@ int main() {
   system("PAUSE");
   return 0;
 }
-=======
-
->>>>>>> 83a09e54bef5d6771cf7e79981bb72f3c2d0f7c6

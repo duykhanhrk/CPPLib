@@ -3,8 +3,8 @@
 /* Define */
 
 // Cursor postion
-#define CURRENT_CURSOR_POSITION_X CursorPositionX()
-#define CURRENT_CURSOR_POSITION_Y CursorPositionY()
+#define CURSOR_POSITION_X CursorPositionX()
+#define CURSOR_POSITION_Y CursorPositionY()
 
 // Window rows, columns
 #define WINDOW_ROWS WindowRows()
