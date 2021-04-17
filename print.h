@@ -1,280 +1,272 @@
 /* Print */
 
 /* Define */
+#define ContextArgumentsPrint position_tp position_x = CURRENT_CURSOR_POSITION_X, \
+                              position_tp position_y = CURRENT_CURSOR_POSITION_Y, \
+                              color_tp f_color = CURRENT_FOREGROUND, \
+                              color_tp b_color = CURRENT_BACKGROUND
 
-#define __ContextArgument__ position_tp position_x = CURRENT_CURSOR_POSITION_X, \
-                        position_tp position_y = CURRENT_CURSOR_POSITION_Y, \
-                        color_tp f_color = CURRENT_FOREGROUND, \
-                        color_tp b_color = CURRENT_BACKGROUND
+#define EndLine GotoXY(position_x, position_y + 1)
 
-#define __ApplyContextArgument__ GotoXY(position_x, position_y); \
-                             SetColor(f_color, b_color);
+/* Write */
 
-#define __EndLine__ GotoXY(position_x, position_y + 1)
+void Write(char obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
+  printf("%c", obj);
+  ApplyColorContext;
+}
 
-#define __SaveContext__ color_tp __current_foreground__ = CURRENT_FOREGROUND; \
-                        color_tp __current_background__ = CURRENT_BACKGROUND; \
-                        position_tp __position_x__ = CURRENT_CURSOR_POSITION_X; \
-                        position_tp __position_y__ = CURRENT_CURSOR_POSITION_Y
+void Write(const char *obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
+  printf("%s", obj);
+  ApplyColorContext;
+}
 
-#define __ApplyContext__ GotoXY(__position_x__, __position_y__); \
-                         SetColor(__current_foreground__, __current_background__)
+void Write(short int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
+  printf("%hi", obj);
+  ApplyColorContext;
+}
+
+void Write(int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
+  printf("%d", obj);
+  ApplyColorContext;
+}
+
+void Write(long long int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
+  printf("%ld", obj);
+  ApplyColorContext;
+}
+
+void Write(unsigned short int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
+  printf("%hu", obj);
+  ApplyColorContext;
+}
+
+void Write(unsigned int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
+  printf("%u", obj);
+  ApplyColorContext;
+}
+
+void Write(unsigned long long int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
+  printf("%llu", obj);
+  ApplyColorContext;
+}
 
 /* Print */
 
-void Print(char obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%c", obj);
- __ApplyColorContext__;
-}
-
-void PrintLine(char obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void Print(char obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   printf("%c\n", obj);
-  __EndLine__;
- __ApplyColorContext__;
+  EndLine;
+  ApplyColorContext;
 }
 
-void Print(const char *obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%s", obj);
- __ApplyColorContext__;
-}
-
-void PrintLine(const char *obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void Print(const char *obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   printf("%s\n", obj);
-  __EndLine__;
- __ApplyColorContext__;
+  EndLine;
+  ApplyColorContext;
 }
 
-void Print(short int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%hi", obj);
- __ApplyColorContext__;
-}
-
-void PrintLine(short int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void Print(short int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   printf("%hi\n", obj);
-  __EndLine__;
- __ApplyColorContext__;
+  EndLine;
+  ApplyColorContext;
 }
 
-void Print(int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%d", obj);
- __ApplyColorContext__;
-}
-
-void PrintLine(int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void Print(int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   printf("%d\n", obj);
-  __EndLine__;
- __ApplyColorContext__;
+  EndLine;
+  ApplyColorContext;
 }
 
-void Print(long long int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%ld", obj);
- __ApplyColorContext__;
-}
-
-void PrintLine(long long int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void Print(long long int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   printf("%ld\n", obj);
-  __EndLine__;
- __ApplyColorContext__;
+  EndLine;
+  ApplyColorContext;
 }
 
-void Print(unsigned short int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%hu", obj);
- __ApplyColorContext__;
-}
-
-void PrintLine(unsigned short int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void Print(unsigned short int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   printf("%hu\n", obj);
-  __EndLine__;
- __ApplyColorContext__;
+  EndLine;
+  ApplyColorContext;
 }
 
-void Print(unsigned int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%u", obj);
- __ApplyColorContext__;
-}
-
-void PrintLine(unsigned int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void Print(unsigned int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   printf("%u\n", obj);
-  __EndLine__;
- __ApplyColorContext__;
+  EndLine;
+  ApplyColorContext;
 }
 
-void Print(unsigned long long int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%llu", obj);
- __ApplyColorContext__;
-}
-
-void PrintLine(unsigned long long int obj, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void Print(unsigned long long int obj, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   printf("%llu\n", obj);
-  __EndLine__;
- __ApplyColorContext__;
-}
-
-void PrintDate(time_t obj, __ContextArgument__) {
-  time(&obj);
-  struct tm *timeinfo = localtime(&obj);
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%hu/%hu/%hu", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900);
- __ApplyColorContext__;
-}
-
-void PrintDateLine(time_t obj, __ContextArgument__) {
-  time(&obj);
-  struct tm *timeinfo = localtime(&obj);
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-  printf("%hu/%hu/%hu\n", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900);
-  __EndLine__;
- __ApplyColorContext__;
+  EndLine;
+  ApplyColorContext;
 }
 
 /* Echo */
 
-void Echo(char obj, __ContextArgument__) {
-  __SaveContext__;
-  __ApplyContextArgument__;
+void Echo(char obj, ContextArgumentsPrint) {
+  SaveContext;
+  ApplyContextArguments;
   printf("%c", obj);
-  __ApplyContext__;
+  ApplyContext;
 }
 
-void Echo(const char *obj, __ContextArgument__) {
-  __SaveContext__;
-  __ApplyContextArgument__;
+void Echo(const char *obj, ContextArgumentsPrint) {
+  SaveContext;
+  ApplyContextArguments;
   printf("%s", obj);
-  __ApplyContext__;
+  ApplyContext;
 }
 
-void Echo(short int obj, __ContextArgument__) {
-  __SaveContext__;
-  __ApplyContextArgument__;
+void Echo(short int obj, ContextArgumentsPrint) {
+  SaveContext;
+  ApplyContextArguments;
   printf("%hi", obj);
-  __ApplyContext__;
+  ApplyContext;
 }
 
-void Echo(int obj, __ContextArgument__) {
-  __SaveContext__;
-  __ApplyContextArgument__;
+void Echo(int obj, ContextArgumentsPrint) {
+  SaveContext;
+  ApplyContextArguments;
   printf("%d", obj);
-  __ApplyContext__;
+  ApplyContext;
 }
 
-void Echo(long long int obj, __ContextArgument__) {
-  __SaveContext__;
-  __ApplyContextArgument__;
+void Echo(long long int obj, ContextArgumentsPrint) {
+  SaveContext;
+  ApplyContextArguments;
   printf("%ld", obj);
-  __ApplyContext__;
+  ApplyContext;
 }
 
-void Echo(unsigned short int obj, __ContextArgument__) {
-  __SaveContext__;
-  __ApplyContextArgument__;
+void Echo(unsigned short int obj, ContextArgumentsPrint) {
+  SaveContext;
+  ApplyContextArguments;
   printf("%hu", obj);
-  __ApplyContext__;
+  ApplyContext;
 }
 
-void Echo(unsigned int obj, __ContextArgument__) {
-  __SaveContext__;
-  __ApplyContextArgument__;
+void Echo(unsigned int obj, ContextArgumentsPrint) {
+  SaveContext;
+  ApplyContextArguments;
   printf("%u", obj);
-  __ApplyContext__;
+  ApplyContext;
 }
 
-void Echo(unsigned long long int obj, __ContextArgument__) {
-  __SaveContext__;
-  __ApplyContextArgument__;
+void Echo(unsigned long long int obj, ContextArgumentsPrint) {
+  SaveContext;
+  ApplyContextArguments;
   printf("%llu", obj);
-  __ApplyContext__;
+  ApplyContext;
 }
 
-void EchoDate(time_t obj, __ContextArgument__) {
+// Print DateTime
+
+void WriteDate(time_t obj, ContextArgumentsPrint) {
   time(&obj);
   struct tm *timeinfo = localtime(&obj);
-  __SaveContext__;
-  __ApplyContextArgument__;
+  SaveColorContext;
+  ApplyContextArguments;
   printf("%hu/%hu/%hu", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900);
-  __ApplyContext__;
+  ApplyColorContext;
+}
+
+void PrintDate(time_t obj, ContextArgumentsPrint) {
+  time(&obj);
+  struct tm *timeinfo = localtime(&obj);
+  SaveColorContext;
+  ApplyContextArguments;
+  printf("%hu/%hu/%hu\n", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900);
+  EndLine;
+  ApplyColorContext;
+}
+
+void EchoDate(time_t obj, ContextArgumentsPrint) {
+  time(&obj);
+  struct tm *timeinfo = localtime(&obj);
+  SaveContext;
+  ApplyContextArguments;
+  printf("%hu/%hu/%hu", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900);
+  ApplyContext;
 }
 
 /* Draw */
 
 #define DRAW_CHR_DEFAULT 32
 
-// Print a line
-void DrawVerLine(size_tp size, char chr = DRAW_CHR_DEFAULT, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+// Draw a line
+void DrawVerLine(size_tp size, char chr = DRAW_CHR_DEFAULT, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   for (int i = 0; i < size - 1; i ++) {
     GotoXY(position_x, position_y + i);
     printf("%c\n", chr);
   }
   GotoXY(position_x, position_y + size - 1);
   printf("%c", chr);
- __ApplyColorContext__;
+  ApplyColorContext;
 }
 
-void DrawVerLineLine(size_tp size, char chr = DRAW_CHR_DEFAULT, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void DrawHorLine(size_tp size, char chr = DRAW_CHR_DEFAULT, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
+
+  char *line = new char[size + 1];
+  for (int i = 0; i < size; i ++) {
+    line[i] = chr;
+  }
+  line[size] = '\0';
+
+  printf("%s", line);
+
+  delete [] line;
+  ApplyColorContext;
+}
+
+void PrintVerLine(size_tp size, char chr = DRAW_CHR_DEFAULT, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
   for (int i = 0; i < size; i ++) {
     GotoXY(position_x, position_y + i);
     printf("%c\n", chr);
   }
   GotoXY(position_x, position_y + size);
- __ApplyColorContext__;
+  ApplyColorContext;
 }
 
-void DrawHorLine(size_tp size, char chr = DRAW_CHR_DEFAULT, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
-
-  char *line = new char[size + 1];
-  for (int i = 0; i < size; i ++) {
-    line[i] = chr;
-  }
-  line[size] = '\0';
-
-  printf("%s", line);
-
-  delete [] line;
- __ApplyColorContext__;
-}
-
-void DrawHorLineLine(size_tp size, char chr = DRAW_CHR_DEFAULT, __ContextArgument__) {
-  __SaveColorContext__;
-  __ApplyContextArgument__;
+void PrintHorLine(size_tp size, char chr = DRAW_CHR_DEFAULT, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
 
   char *line = new char[size + 1];
   for (int i = 0; i < size; i ++) {
@@ -285,15 +277,15 @@ void DrawHorLineLine(size_tp size, char chr = DRAW_CHR_DEFAULT, __ContextArgumen
   printf("%s", line);
   delete [] line;
 
-  __EndLine__;
- __ApplyColorContext__;
+  EndLine;
+  ApplyColorContext;
 }
 
-// Print a rectangle
+// Draw a rectangle
 
-void DrawRec(char chr, int width, int height) {
-  int x = CursorPositionX();
-  int y = CursorPositionY();
+void DrawRec(size_tp width, size_tp height, char chr = DRAW_CHR_DEFAULT, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
 
   char *line = new char[width + 1];
 
@@ -308,108 +300,22 @@ void DrawRec(char chr, int width, int height) {
   delete [] line;
 
   for (int i = 1; i < height - 1; i ++) {
-    GotoXY(x, y + i);
+    GotoXY(position_x, position_y + i);
     printf("%c", chr);
 
-    GotoXY(x + width - 1, y + i);
-    printf("%c", chr);
-  }
-
-  GotoXY(x, y + height);
-}
-
-void DrawRec(char chr, int width, int height, int f_color, int b_color, int x, int y) {
-  int current_foreground = CURRENT_FOREGROUND;
-  int current_background = CURRENT_BACKGROUND;
-
-  SetColor(f_color, b_color);
-  GotoXY(x, y);
-
-  char *line = new char[width + 1];
-
-  for (int i = 0; i < width; i ++) {
-    line[i] = chr;
-  }
-  line[width] = '\0';
-
-  printf("%s", line);
-  GotoXY(x, y + height - 1);
-  printf("%s", line);
-  delete [] line;
-
-  for (int i = 1; i < height - 1; i ++) {
-    GotoXY(x, y + i);
-    printf("%c", chr);
-
-    GotoXY(x + width - 1, y + i);
+    GotoXY(position_x + width - 1, position_y + i);
     printf("%c", chr);
   }
 
   GotoXY(x, y + height);
-  SetColor(current_foreground, current_background);
+  ApplyColorContext;
 }
 
-void DrawRecWC(char chr, int width, int height, int f_color, int b_color) {
-  int current_foreground = CURRENT_FOREGROUND;
-  int current_background = CURRENT_BACKGROUND;
+// Draw rectangle shape
 
-  SetColor(f_color, b_color);
-
-  DrawRec(chr, width, height);
-
-  SetColor(current_foreground, current_background);
-}
-
-void DrawRecWP(char chr, int width, int height, int x, int y) {
-  GotoXY(x, y);
-
-  char *line = new char[width + 1];
-
-  for (int i = 0; i < width; i ++) {
-    line[i] = chr;
-  }
-  line[width] = '\0';
-
-  printf("%s", line);
-  GotoXY(x, y + height - 1);
-  printf("%s", line);
-  delete [] line;
-
-  for (int i = 1; i < height - 1; i ++) {
-    GotoXY(x, y + i);
-    printf("%c", chr);
-
-    GotoXY(x + width - 1, y + i);
-    printf("%c", chr);
-  }
-
-  GotoXY(x, y + height);
-}
-
-// Print rectangle shape
-
-void DrawRecShape(char chr, int width, int height) {
-  char *line = new char[width + 1];
-
-  for (int i = 0; i < width; i ++) {
-    line[i] = chr;
-  }
-  line[width] = '\0';
-
-  for (int i = 0; i < height - 1; i ++) {
-    printf("%s\n", line);
-  }
-
-  delete [] line;
-}
-
-void DrawRecShape(char chr, int width, int height, int f_color, int b_color, int x, int y) {
-  int current_foreground = CURRENT_FOREGROUND;
-  int current_background = CURRENT_BACKGROUND;
-
-  SetColor(f_color, b_color);
-
-  GotoXY(x, y);
+void DrawRecShape(size_tp width, size_tp height, char chr = DRAW_CHR_DEFAULT, ContextArgumentsPrint) {
+  SaveColorContext;
+  ApplyContextArguments;
 
   char *line = new char[width + 1];
 
@@ -419,28 +325,11 @@ void DrawRecShape(char chr, int width, int height, int f_color, int b_color, int
   line[width] = '\0';
 
   for (int i = 0; i < height - 1; i ++) {
-    GotoXY(x, y + i);
+    GotoXY(position_x, position_y + i);
     printf("%s", line);
   }
 
   delete [] line;
 
-  SetColor(current_foreground, current_background);
-}
-
-void DrawRecShapeWC(char chr, int width, int height, int f_color, int b_color) {
-  int current_foreground = CURRENT_FOREGROUND;
-  int current_background = CURRENT_BACKGROUND;
-
-  SetColor(f_color, b_color);
-
-  DrawRecShape(chr, width, height);
-
-  SetColor(current_foreground, current_background);
-}
-
-void DrawRecShapeWP(char chr, int width, int height, int x, int y) {
-  GotoXY(x, y);
-
-  DrawRecShape(chr, width, height);
+  ApplyContextArguments;
 }

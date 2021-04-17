@@ -44,16 +44,16 @@
 /* Prototype */
 
 void ClearScreen();
-void ClearScreen(color_tp b_color);
+void ClearScreen(int b_color);
 
-void SetColor(color_tp f_color, color_tp b_color);
-void SetForeground(color_tp f_color);
-void SetBackground(color_tp b_color);
+void SetColor(int f_color, int b_color);
+void SetForeground(int f_color);
+void SetBackground(int b_color);
 
 /* Config */
 
-color_tp CURRENT_FOREGROUND = FOREGROUND_WHITE;
-color_tp CURRENT_BACKGROUND = BACKGROUND_BLACK;
+int CURRENT_BACKGROUND = BACKGROUND_BLACK;
+int CURRENT_FOREGROUND = FOREGROUND_WHITE;
 
 /* Logic */
 
@@ -63,29 +63,29 @@ void ClearScreen() {
 }
 
 // Clear screen with background color
-void ClearScreen(color_tp b_color) {
+void ClearScreen(int b_color) {
 	SetBackground(b_color);
 	system(CLEAR_SCREEN_COMMAND);
 }
 
-// Set foreground color
-void SetForeground(color_tp f_color) {
+// Set foreground
+void SetForeground(int f_color) {
 	CURRENT_FOREGROUND = f_color;
 
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(console, CURRENT_FOREGROUND | CURRENT_BACKGROUND);
 }
 
-// Set background color
-void SetBackground(color_tp b_color) {
+// Set background
+void SetBackground(int b_color) {
 	CURRENT_BACKGROUND = b_color;
 
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(console, CURRENT_FOREGROUND | CURRENT_BACKGROUND);
 }
 
-// Set foreground and background color
-void SetColor(color_tp f_color, color_tp b_color) {
+// Set color
+void SetColor(int f_color, int b_color) {
 	CURRENT_BACKGROUND = b_color;
 	CURRENT_FOREGROUND = f_color;
 
