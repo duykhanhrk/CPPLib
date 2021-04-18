@@ -45,8 +45,8 @@ char Input(
   InputEventTriggerPrototype(OnLeave) = SHORT_INPUT_ON_LEAVE_EVENT
 ) {
   // Be strict with triggers
-  if (NavigationPanel == NULL) NavigationPanel = USHORT_INPUT_NAV_PANEL;
-  if (Express == NULL) Express = USHORT_INPUT_EXPRESS;
+  if (NavigationPanel == NULL) NavigationPanel = SHORT_INPUT_NAV_PANEL;
+  if (Express == NULL) Express =USHORT_INPUT_EXPRESS;
 
   // Initialize
   SaveColorContext;
