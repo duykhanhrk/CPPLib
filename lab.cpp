@@ -7,10 +7,10 @@ void status(bool st) {
 
 InputEventTriggerInit(InputOnChage) {
   Write("Ban cua nhap: ", 4, 4);
-  Echo("     ");
-  Write(VoidTypeToUShort(obj));
+  Echo("                ");
+  Write(VoidTypeToUInt(obj));
 
-  if (VoidTypeToUShort(obj) < VoidTypeToUShort(min)) status(false);
+  if (VoidTypeToUInt(obj) < VoidTypeToUInt(min)) status(false);
   else status(true);
 
   Write("                                         ", 4, 8);
@@ -25,7 +25,7 @@ InputEventTriggerInit(InputOnViolate) {
 }
 
 InputEventTriggerInit(InputOnEnter) {
-  if (VoidTypeToUShort(obj) < VoidTypeToUShort(min)) status(false);
+  if (VoidTypeToUInt(obj) < VoidTypeToUInt(min)) status(false);
   else status(true);
 }
 
@@ -34,19 +34,19 @@ InputEventTriggerInit(InputOnLeave) {
 }
 
 int main() {
-  uh_tp n = 0;
+  ui_tp n = 0;
 
   HideCursor;
 
   Input(
     n,
-    USHORT_INPUT_MAX_VALUE,
+    UINT_INPUT_MAX_VALUE,
     20,
     CURSOR_POSITION_X,
     CURSOR_POSITION_Y,
     CURRENT_FOREGROUND,
     CURRENT_BACKGROUND,
-    USHORT_INPUT_CONTAINER_SIZE + 1,
+    UINT_INPUT_CONTAINER_SIZE + 1,
     FOREGROUND_RED,
     BACKGROUND_WHITE,
     NULL,
@@ -57,11 +57,6 @@ int main() {
     InputOnEnter,
     InputOnLeave
   );
-
-  GotoXY(40, 0);
-  for (int i = 0; i < n; i ++) {
-    Echo("Hello world");
-  }
 
   GotoXY(0, WINDOW_ROWS - 1);
   system("PAUSE");

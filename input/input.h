@@ -68,8 +68,4 @@ char ControlPanel() {
 #define  NUMBER_INPUT_CHAR_SET NUMERIC_CHAR_SET
 #define  NUMBER_INPUT_EXPRESS INPUT_EXPRESS
 
-#define NumberInputStrictWithTriggers \
-        if (NavigationPanel == NULL) NavigationPanel = USHORT_INPUT_NAV_PANEL; \
-        if (Express == NULL) Express = USHORT_INPUT_EXPRESS
-
 #include "uintinp.h"
