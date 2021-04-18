@@ -300,7 +300,7 @@ char Input(
   return c;
 }
 
-/* UInt */
+/* ULong */
 
 // Limit
 #define ULONG_MAX_VALUE 18446744073709551615u
