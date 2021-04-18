@@ -378,7 +378,7 @@ char Input(
     obj = min;
     InputEventTriggerHandle(OnChange);
   }
-  printf("%u", obj);
+  printf("%llu", obj);
   if (obj == 0) printf("%c", BACKSPACE);
 
   // Input

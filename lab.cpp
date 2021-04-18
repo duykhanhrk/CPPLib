@@ -8,9 +8,9 @@ void status(bool st) {
 InputEventTriggerInit(InputOnChage) {
   Write("Ban cua nhap: ", 4, 4);
   Echo("                           ");
-  Write(VoidTypeToShort(obj));
+  Write(VoidTypeToLong(obj));
 
-  if (VoidTypeToShort(obj) < VoidTypeToShort(min)) status(false);
+  if (VoidTypeToLong(obj) < VoidTypeToLong(min)) status(false);
   else status(true);
 
   Write("                                         ", 4, 8);
@@ -25,7 +25,7 @@ InputEventTriggerInit(InputOnViolate) {
 }
 
 InputEventTriggerInit(InputOnEnter) {
-  if (VoidTypeToShort(obj) < VoidTypeToShort(min)) status(false);
+  if (VoidTypeToLong(obj) < VoidTypeToLong(min)) status(false);
   else status(true);
 }
 
@@ -34,19 +34,19 @@ InputEventTriggerInit(InputOnLeave) {
 }
 
 int main() {
-  h_tp n = 0;
+  l_tp n = 0;
 
   HideCursor;
 
   Input(
     n,
-    SHORT_INPUT_MAX_VALUE,
-    -100,
+    LONG_INPUT_MAX_VALUE,
+    LONG_INPUT_MIN_VALUE,
     CURSOR_POSITION_X,
     CURSOR_POSITION_Y,
     CURRENT_FOREGROUND,
     CURRENT_BACKGROUND,
-    SHORT_INPUT_CONTAINER_SIZE + 1,
+    LONG_INPUT_CONTAINER_SIZE + 1,
     FOREGROUND_RED,
     BACKGROUND_WHITE,
     NULL,

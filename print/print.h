@@ -41,7 +41,7 @@ void Write(int obj, ContextArgumentsPrint) {
 void Write(long long int obj, ContextArgumentsPrint) {
   SaveColorContext;
   ApplyContextArguments;
-  printf("%ld", obj);
+  printf("%lld", obj);
   ApplyColorContext;
 }
 
@@ -103,7 +103,7 @@ void Print(int obj, ContextArgumentsPrint) {
 void Print(long long int obj, ContextArgumentsPrint) {
   SaveColorContext;
   ApplyContextArguments;
-  printf("%ld\n", obj);
+  printf("%lld\n", obj);
   EndLine;
   ApplyColorContext;
 }
@@ -165,7 +165,7 @@ void Echo(int obj, ContextArgumentsPrint) {
 void Echo(long long int obj, ContextArgumentsPrint) {
   SaveContext;
   ApplyContextArguments;
-  printf("%ld", obj);
+  printf("%lld", obj);
   ApplyContext;
 }
 

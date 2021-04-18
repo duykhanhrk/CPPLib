@@ -3,6 +3,8 @@
 #define UINT_STANDARD_EXPRESS UIntStandardExpress
 #define ULONG_STANDARD_EXPRESS ULongStandardExpress
 #define SHORT_STANDARD_EXPRESS ShortStandardExpress
+#define INT_STANDARD_EXPRESS IntStandardExpress
+#define LONG_STANDARD_EXPRESS LongStandardExpress
 
 #define ExpressPrototype(express_name) \
         void (*express_name)(char, void_tp, void_tp, void_tp, position_tp, position_tp, color_tp, color_tp)
@@ -15,6 +17,8 @@
 
 #define ExpressHandle(express_name) \
         ExpressCall(express_name);
+
+/* Standard */
 
 ExpressInit(UShortStandardExpress) {
   printf("%hu", VoidTypeToUShort(obj));
@@ -30,4 +34,12 @@ ExpressInit(ULongStandardExpress) {
 
 ExpressInit(ShortStandardExpress) {
   printf("%hi", VoidTypeToShort(obj));
+}
+
+ExpressInit(IntStandardExpress) {
+  printf("%d", VoidTypeToInt(obj));
+}
+
+ExpressInit(LongStandardExpress) {
+  printf("%lld", VoidTypeToLong(obj));
 }
