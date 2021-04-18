@@ -1,18 +1,36 @@
 #include "cslscr.h"
 
-InputEventTriggerInit(InputOnchage) {
+void status(bool st) {
+  if (st) Write("  OK   ", 4, 6, FOREGROUND_WHITE, BACKGROUND_GREEN);
+  else Write(" WRONG ", 4, 6, FOREGROUND_WHITE, BACKGROUND_RED);
+}
+
+InputEventTriggerInit(InputOnChage) {
   Write("Ban cua nhap: ", 4, 4);
   Echo("     ");
   Write(VoidTypeToUShort(obj));
-  if (VoidTypeToUShort(obj) < VoidTypeToUShort(min)) {
-    Write("Vi pham gioi han", 4, 5);
-    return;
-  }
-  Write("                                             ", 4, 5);
+
+  if (VoidTypeToUShort(obj) < VoidTypeToUShort(min)) status(false);
+  else status(true);
+
+  Write("                                         ", 4, 8);
+}
+
+InputEventTriggerInit(InputOnInvalid) {
+  Write("         Chi chap nhan ki tu so          ", 4, 8, FOREGROUND_WHITE, BACKGROUND_YELLOW);
 }
 
 InputEventTriggerInit(InputOnViolate) {
-  Write("Vi pham gioi han", 4, 5);
+  Write("  Phai nam trong pham vi tu 20 den 2000  ", 4, 8, FOREGROUND_WHITE, BACKGROUND_YELLOW);
+}
+
+InputEventTriggerInit(InputOnEnter) {
+  if (VoidTypeToUShort(obj) < VoidTypeToUShort(min)) status(false);
+  else status(true);
+}
+
+InputEventTriggerInit(InputOnLeave) {
+  Write("                                         ", 4, 8);
 }
 
 int main() {
@@ -33,14 +51,17 @@ int main() {
     BACKGROUND_WHITE,
     NULL,
     NULL,
-    InputOnchage,
+    InputOnChage,
     InputOnViolate,
-    NULL,
-    NULL,
-    NULL
+    InputOnInvalid,
+    InputOnEnter,
+    InputOnLeave
   );
 
-  Write("Hello world", 0, 10);
+  GotoXY(40, 0);
+  for (int i = 0; i < n; i ++) {
+    Echo("Hello world");
+  }
 
   GotoXY(0, WINDOW_ROWS - 1);
   system("PAUSE");

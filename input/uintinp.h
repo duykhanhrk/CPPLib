@@ -73,7 +73,10 @@ char Input(
   InputEventTriggerHandle(OnEnter);
 
   // Re-create the context
-  obj = obj < min ? min : obj;
+  if (obj < min) {
+    obj = min;
+    InputEventTriggerHandle(OnChange);
+  }
   printf("%hu", obj);
   if (obj == 0) printf("%c", BACKSPACE);
 
@@ -95,21 +98,25 @@ char Input(
         continue;
       }
 
-      // Violates min value, Call OnViolate
-      if (NumViolatesMinValue(obj, c, min)) InputEventTriggerHandle(OnViolate);
+      if (obj != obj * 10 + CharToInt(c)) {
+        obj = obj * 10 + CharToInt(c);
+        printf("%c", c);
 
-      obj = obj * 10 + CharToInt(c);
-      if (obj == 0) continue;
-      printf("%c", c);
+        // Call OnChange
+        InputEventTriggerHandle(OnChange);
 
-      // Call OnChange
-      InputEventTriggerHandle(OnChange);
+        // Violates min value, Call OnViolate
+        if (obj < min) InputEventTriggerHandle(OnViolate);
+      }
     } else if (c == BACKSPACE) {
       if (obj != 0) printf("%c %c", BACKSPACE, BACKSPACE);
       obj /= 10;
 
       // Call OnChange
       InputEventTriggerHandle(OnChange);
+
+      // Violates min value, Call OnViolate
+      if (obj < min) InputEventTriggerHandle(OnViolate);
     } else {
       // Call OnInvalid
       InputEventTriggerHandle(OnInvalid);
@@ -119,7 +126,10 @@ char Input(
   }
 
   // Check min and re-create the context
-  obj = obj < min ? min : obj;
+  if (obj < min) {
+    obj = min;
+    InputEventTriggerHandle(OnChange);
+  }
 
   // Setup color
   SetColor(f_color, b_color);
