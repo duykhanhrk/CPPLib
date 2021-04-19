@@ -29,6 +29,7 @@
 #define ENTER 13
 #define ESC 27
 #define BACKSPACE 8
+#define SLASH 47
 #define KEY_UP -1
 #define KEY_DOWN -2
 #define KEY_LEFT -3
@@ -98,9 +99,9 @@
 #define VoidTypeToShort(obj) (*((h_tp *) obj))
 #define VoidTypeToInt(obj) (*((i_tp *) obj))
 #define VoidTypeToLong(obj) (*((l_tp *) obj))
+#define VoidTypeToDateTime(obj) (*((time_t *) obj))
 #define NumViolatesMaxValue(num, c, max) ((max - num < max - max/10) || (max - num == max - max/10 && CharToInt(c) > max%10))
 #define NumViolatesMinValue(num, c, min) ((min - obj > min - min/10) || (min - obj == min - min/10 && 48 - c < min%10))
-
 
 #define CharToInt(c) (c - 48)
 

@@ -37,6 +37,7 @@ char ControlPanel() {
     else if (c == 72) return KEY_UP;
     return '\0';
   }
+
   return c;
 }
 
@@ -68,3 +69,4 @@ char ControlPanel() {
 
 #include "uintinp.h"
 #include "intinp.h"
+#include "dtinp.h"
