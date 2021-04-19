@@ -6,11 +6,7 @@ void status(bool st) {
 }
 
 InputEventTriggerInit(InputOnChage) {
-  Write("Ban cua nhap: ", 4, 4);
-  Echo("                           ");
-  Write(VoidTypeToLong(obj));
-
-  if (VoidTypeToLong(obj) < VoidTypeToLong(min)) status(false);
+  if (VoidTypeToDateTime(obj) < VoidTypeToDateTime(min)) status(false);
   else status(true);
 
   Write("                                         ", 4, 8);
@@ -25,7 +21,7 @@ InputEventTriggerInit(InputOnViolate) {
 }
 
 InputEventTriggerInit(InputOnEnter) {
-  if (VoidTypeToLong(obj) < VoidTypeToLong(min)) status(false);
+  if (VoidTypeToDateTime(obj) < VoidTypeToDateTime(min)) status(false);
   else status(true);
 }
 
@@ -34,19 +30,41 @@ InputEventTriggerInit(InputOnLeave) {
 }
 
 int main() {
-  l_tp n = 0;
-
   HideCursor;
 
-  Input(
-    n,
-    LONG_INPUT_MAX_VALUE,
-    LONG_INPUT_MIN_VALUE,
+  // l_tp n = 0;
+
+  // Input(
+  //   n,
+  //   LONG_INPUT_MAX_VALUE,
+  //   LONG_INPUT_MIN_VALUE,
+  //   CURSOR_POSITION_X,
+  //   CURSOR_POSITION_Y,
+  //   CURRENT_FOREGROUND,
+  //   CURRENT_BACKGROUND,
+  //   LONG_INPUT_CONTAINER_SIZE + 1,
+  //   FOREGROUND_RED,
+  //   BACKGROUND_WHITE,
+  //   NULL,
+  //   NULL,
+  //   InputOnChage,
+  //   InputOnViolate,
+  //   InputOnInvalid,
+  //   InputOnEnter,
+  //   InputOnLeave
+  // );
+
+  time_t t = DateParse(3, 4, 2021);
+  Write("Nhap ngay thang nam: ");
+  DateInput(
+    t,
+    DATE_INPUT_MAX_VALUE,
+    DATE_INPUT_MIN_VALUE,
     CURSOR_POSITION_X,
     CURSOR_POSITION_Y,
     CURRENT_FOREGROUND,
     CURRENT_BACKGROUND,
-    LONG_INPUT_CONTAINER_SIZE + 1,
+    DATE_INPUT_CONTAINER_SIZE,
     FOREGROUND_RED,
     BACKGROUND_WHITE,
     NULL,
@@ -56,7 +74,7 @@ int main() {
     InputOnInvalid,
     InputOnEnter,
     InputOnLeave
-  );
+);
 
   GotoXY(0, WINDOW_ROWS - 1);
   system("PAUSE");

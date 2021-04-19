@@ -5,6 +5,9 @@
 #define SHORT_STANDARD_EXPRESS ShortStandardExpress
 #define INT_STANDARD_EXPRESS IntStandardExpress
 #define LONG_STANDARD_EXPRESS LongStandardExpress
+#define DATE_STANDARD_EXPRESS DateStandardExpress
+
+#define TWO_DIGITS_USHORT_EXPRESS TwoDigitsUShortExpress
 
 #define ExpressPrototype(express_name) \
         void (*express_name)(char, void_tp, void_tp, void_tp, position_tp, position_tp, color_tp, color_tp)
@@ -42,4 +45,15 @@ ExpressInit(IntStandardExpress) {
 
 ExpressInit(LongStandardExpress) {
   printf("%lld", VoidTypeToLong(obj));
+}
+
+ExpressInit(DateStandardExpress) {
+  time_t t = VoidTypeToDateTime(obj);
+  WriteDate(t);
+}
+
+/* Using for DateTime Input */
+ExpressInit(TwoDigitsUShortExpress) {
+  if (VoidTypeToUShort(obj) < 10) printf("0%hu\n", VoidTypeToUShort(obj));
+  else printf("%hu\n", VoidTypeToUShort(obj));
 }

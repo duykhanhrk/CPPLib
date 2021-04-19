@@ -193,30 +193,45 @@ void Echo(unsigned long long int obj, ContextArgumentsPrint) {
 // Print DateTime
 
 void WriteDate(time_t obj, ContextArgumentsPrint) {
-  time(&obj);
-  struct tm *timeinfo = localtime(&obj);
+  tm time_info = *(localtime(&obj));
   SaveColorContext;
   ApplyContextArguments;
-  printf("%hu/%hu/%hu", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900);
+  if (time_info.tm_mday < 10) printf("0%hu", time_info.tm_mday);
+  else printf("%hu", time_info.tm_mday);
+
+  if (time_info.tm_mon < 10) printf("/0%hu", time_info.tm_mon + 1);
+  else printf("/%hu", time_info.tm_mon + 1);
+
+  printf("/%hu", time_info.tm_year + 1900);
   ApplyColorContext;
 }
 
 void PrintDate(time_t obj, ContextArgumentsPrint) {
-  time(&obj);
-  struct tm *timeinfo = localtime(&obj);
+  struct tm time_info = *(localtime(&obj));
   SaveColorContext;
   ApplyContextArguments;
-  printf("%hu/%hu/%hu\n", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900);
+  if (time_info.tm_mday < 10) printf("0%hu", time_info.tm_mday);
+  else printf("%hu", time_info.tm_mday);
+
+  if (time_info.tm_mon < 10) printf("/0%hu", time_info.tm_mon + 1);
+  else printf("/%hu", time_info.tm_mon + 1);
+
+  printf("/%hu", time_info.tm_year + 1900);
   EndLine;
   ApplyColorContext;
 }
 
 void EchoDate(time_t obj, ContextArgumentsPrint) {
-  time(&obj);
-  struct tm *timeinfo = localtime(&obj);
+  struct tm time_info = *(localtime(&obj));
   SaveContext;
   ApplyContextArguments;
-  printf("%hu/%hu/%hu", timeinfo->tm_mday, timeinfo->tm_mon + 1, timeinfo->tm_year + 1900);
+  if (time_info.tm_mday < 10) printf("0%hu", time_info.tm_mday);
+  else printf("%hu", time_info.tm_mday);
+
+  if (time_info.tm_mon < 10) printf("/0%hu", time_info.tm_mon + 1);
+  else printf("/%hu", time_info.tm_mon + 1);
+
+  printf("/%hu", time_info.tm_year + 1900);
   ApplyContext;
 }
 
